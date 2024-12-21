@@ -13,6 +13,7 @@ class Camera
     float width, height;
     bool firstClick;
     double lastX, lastY;
+    double yaw, pitch;
 
   public:
     glm::vec3 cameraPos;

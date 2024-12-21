@@ -18,6 +18,9 @@ Camera::Camera(glm::vec3 position, float width, float height)
     speed = 0.01f;
     sensitivity = 0.01f;
 
+    pitch = 0.0f;
+    yaw = -90.0f;
+
     lastX = width / 2;
     lastY = height / 2;
     firstClick = true;
@@ -36,8 +39,9 @@ void Camera::MoveCamera(GLFWwindow* window)
     {
         if (firstClick)
         {
-            glfwSetCursorPos(window, width / 2, height / 2);
-            firstClick = true;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwGetCursorPos(window, &lastX, &lastY);
+            firstClick = false;
         }
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
@@ -60,9 +64,8 @@ void Camera::MoveCamera(GLFWwindow* window)
     }
     else
     {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         firstClick = true;
-        lastX = width / 2;
-        lastX = height / 2;
     }
 }
 void Camera::RotateCamera(GLFWwindow* window)
@@ -77,15 +80,23 @@ void Camera::RotateCamera(GLFWwindow* window)
     lastX = mouseX;
     lastY = mouseY;
 
-    float angleX = deltaX * sensitivity;
-    float angleY = deltaY * sensitivity;
+    deltaX = deltaX * sensitivity;
+    deltaY = deltaY * sensitivity;
 
-    glm::mat4 rotationX = glm::rotate(glm::mat4(1), angleY, glm::vec3(1, 0, 0));
-    glm::mat4 rotationY = glm::rotate(glm::mat4(1), -angleX, glm::vec3(0, 1, 0));
+    yaw += deltaX;
+    pitch += deltaY;
 
-    glm::vec4 rotatedVec = (rotationY * rotationX) * glm::vec4(Orientation, 1);
+    if (pitch > 89.0f)
+    {
+        pitch = 89.0f;
+    }
+    if (pitch < -89.0f)
+    {
+        pitch = -89.0f;
+    }
 
-    Orientation.x = rotatedVec.x;
-    Orientation.y = rotatedVec.y;
-    Orientation.z = rotatedVec.z;
+    Orientation.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    Orientation.y = sin(glm::radians(pitch));
+    Orientation.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    Orientation = glm::normalize(Orientation);
 }
