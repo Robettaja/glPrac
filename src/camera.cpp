@@ -5,9 +5,9 @@
 Camera::Camera(glm::vec3 position, float width, float height)
 {
     cameraPos = position;
-    Orientation = glm::vec3(0, 0, -1);
+    orientation = glm::vec3(0, 0, -1);
     camUp = glm::vec3(0, 1, 0);
-    camRight = glm::normalize(glm::cross(Orientation, camUp));
+    camRight = glm::normalize(glm::cross(orientation, camUp));
 
     this->width = width;
     this->height = height;
@@ -28,7 +28,7 @@ Camera::Camera(glm::vec3 position, float width, float height)
 void Camera::UpdateAndSendMatricies(Shader& shader)
 {
     projection = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
-    view = glm::lookAt(cameraPos, cameraPos + Orientation, camUp);
+    view = glm::lookAt(cameraPos, cameraPos + orientation, camUp);
 
     glm::mat4 projectionView = projection * view;
     shader.setMat4("projectionView", projectionView);
@@ -45,12 +45,12 @@ void Camera::MoveCamera(GLFWwindow* window)
         }
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
-            cameraPos += Orientation * speed;
+            cameraPos += orientation * speed;
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         {
 
-            cameraPos -= Orientation * speed;
+            cameraPos -= orientation * speed;
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         {
@@ -95,9 +95,9 @@ void Camera::RotateCamera(GLFWwindow* window)
         pitch = -89.0f;
     }
 
-    Orientation.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    Orientation.y = sin(glm::radians(pitch));
-    Orientation.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    Orientation = glm::normalize(Orientation);
-    camRight = glm::normalize(glm::cross(Orientation, camUp));
+    orientation.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    orientation.y = sin(glm::radians(pitch));
+    orientation.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    orientation = glm::normalize(orientation);
+    camRight = glm::normalize(glm::cross(orientation, camUp));
 }

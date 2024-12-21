@@ -17,7 +17,7 @@ class Camera
 
   public:
     glm::vec3 cameraPos;
-    glm::vec3 Orientation;
+    glm::vec3 orientation;
     glm::vec3 camRight, camUp;
     float sensitivity, speed;
     glm::mat4 projection;
