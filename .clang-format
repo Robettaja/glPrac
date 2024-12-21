@@ -1,0 +1,6 @@
+Language: Cpp
+BasedOnStyle: Microsoft 
+SortIncludes: Never
+IndentWidth: 4
+DerivePointerAlignment: false
+PointerAlignment: Left

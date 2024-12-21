@@ -1,0 +1,66 @@
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+CMakeUserPresets.json
+/build/
+.cache/
+# Compiled object files and libraries
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.lib
+*.a
+# Compiled executables
+*.exe
+*.out
+*.app
+# Debug files
+*.log
+*.pdb
+*.ilk
+*.idb
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+# Generated project files
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.xcodeproj
+*.xcworkspace
+CMakeCache.txt
+CMakeFiles/
+# OpenGL-related specific files (if using shaders or assets)
+/shaders/*.spv  # Compiled Vulkan/OpenGL shaders
+/assets/*.tmp   # Temporary asset files, adjust as needed
+
+# IDE-specific files
+.vscode/
+.idea/
+*.iml
+*.code-workspace
+
+# System files
+*.pyc
+*.class
+*.out
+*.stackdump
+
+# Others
+node_modules/
+.env
