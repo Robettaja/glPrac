@@ -9,9 +9,6 @@ Camera::Camera(glm::vec3 position, float width, float height)
     camUp = glm::vec3(0, 1, 0);
     camRight = glm::normalize(glm::cross(orientation, camUp));
 
-    this->width = width;
-    this->height = height;
-
     projection = glm::mat4(1.0f);
     view = glm::mat4(1.0f);
 
@@ -25,7 +22,8 @@ Camera::Camera(glm::vec3 position, float width, float height)
     lastY = height / 2;
     firstClick = true;
 }
-void Camera::UpdateAndSendMatricies(Shader& shader)
+
+void Camera::UpdateAndSendMatricies(Shader& shader, float width, float height)
 {
     projection = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
     view = glm::lookAt(cameraPos, cameraPos + orientation, camUp);

@@ -20,12 +20,15 @@
 #include "ebo.hpp"
 #include <shader.h>
 
-#define WIDTH 800
-#define HEIGHT 600
-
 #include "camera.hpp"
+
+int winWidth = 800;
+int winHeight = 600;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+    winWidth = width;
+    winHeight = height;
     glViewport(0, 0, width, height);
 }
 int main()
@@ -61,7 +64,7 @@ int main()
 
     // Create window for application check if it exist and asing it to the
     // software
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL Harjoitus", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(winWidth, winHeight, "OpenGL Harjoitus", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -91,7 +94,7 @@ int main()
     Texture texture("textures/cool.png");
     texture.Bind();
 
-    Camera cam(glm::vec3(0, 0, 3), WIDTH, HEIGHT);
+    Camera cam(glm::vec3(0, 0, 3), winWidth, winHeight);
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
     while (!glfwWindowShouldClose(window))
     {
@@ -99,7 +102,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        cam.UpdateAndSendMatricies(shader);
+        cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
         cam.MoveCamera(window);
         // everything required for draw call
         vao.Bind();

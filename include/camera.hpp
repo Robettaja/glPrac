@@ -10,7 +10,6 @@ class Camera
 {
   private:
     glm::vec3 camForward;
-    float width, height;
     bool firstClick;
     double lastX, lastY;
     double yaw, pitch;
@@ -23,7 +22,7 @@ class Camera
     glm::mat4 projection;
     glm::mat4 view;
     Camera(glm::vec3 position, float width, float height);
-    void UpdateAndSendMatricies(Shader& shader);
+    void UpdateAndSendMatricies(Shader& shader, float width, float height);
     void MoveCamera(GLFWwindow* window);
     void RotateCamera(GLFWwindow* window);
 };
