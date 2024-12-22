@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 
+#include "block.hpp"
 #include "vbo.hpp"
 #include "vao.hpp"
 #include "shader.hpp"
@@ -90,7 +91,9 @@ int main()
     Texture texture("textures/cool.png");
     texture.Bind();
 
+    Block block;
     Camera cam(glm::vec3(0, 0, 3), winWidth, winHeight);
+
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
     while (!glfwWindowShouldClose(window))
     {
