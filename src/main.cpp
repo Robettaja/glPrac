@@ -17,6 +17,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <stb_image.h>
 
 int winWidth = 800;
@@ -77,6 +78,8 @@ int main()
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
     Vao vao;
     Vbo vbo(vertices, sizeof(vertices));
     //    Ebo ebo(indices, sizeof(indices));
@@ -92,6 +95,7 @@ int main()
     texture.Bind();
 
     Block block;
+
     Camera cam(glm::vec3(0, 0, 3), winWidth, winHeight);
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");

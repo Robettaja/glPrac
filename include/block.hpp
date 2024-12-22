@@ -10,8 +10,8 @@ class Block
     glm::mat4 model;
     float* vertexData;
     unsigned int* indices;
-    float* AsingVertexData();
-    unsigned int* AsingIndices();
+    float* AssignVertexData();
+    unsigned int* AssignIndices();
     void SetupResources();
 
   public:

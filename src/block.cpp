@@ -1,19 +1,27 @@
+
 #include "block.hpp"
+#include "vbo.hpp"
+#include "vao.hpp"
+#include "ebo.hpp"
+#include "texture.hpp"
+
+#include <glm/fwd.hpp>
 #include <vector>
-#include <iostream>
 
 Block::Block()
 {
     model = glm::mat4(1);
-    vertexData = AsingVertexData();
-    indices = new unsigned int;
+    vertexData = AssignVertexData();
+    indices = AssignIndices();
+
+    SetupResources();
 }
 Block::~Block()
 {
     delete[] vertexData;
-    delete indices;
+    delete[] indices;
 }
-float* Block::AsingVertexData()
+float* Block::AssignVertexData()
 {
     std::vector<glm::vec3> positions;
     positions.emplace_back(glm::vec3(-1, -1, -1));
@@ -65,15 +73,37 @@ float* Block::AsingVertexData()
 
     return data;
 }
-unsigned int* Block::AsingIndices()
+unsigned int* Block::AssignIndices()
 {
-    unsigned int* testi = new unsigned int;
-    return testi;
+    std::vector<glm::vec3> indices;
+    indices.emplace_back(glm::vec3(4, 5, 6));
+    indices.emplace_back(glm::vec3(6, 7, 4));
+    indices.emplace_back(glm::vec3(0, 6, 2));
+    indices.emplace_back(glm::vec3(2, 1, 0));
+    indices.emplace_back(glm::vec3(0, 4, 7));
+    indices.emplace_back(glm::vec3(7, 3, 0));
+    indices.emplace_back(glm::vec3(1, 2, 6));
+    indices.emplace_back(glm::vec3(6, 5, 1));
+    indices.emplace_back(glm::vec3(3, 7, 6));
+    indices.emplace_back(glm::vec3(6, 2, 3));
+    indices.emplace_back(glm::vec3(0, 1, 5));
+    indices.emplace_back(glm::vec3(5, 4, 0));
+
+    unsigned int* data = new unsigned int[3 * indices.size()];
+    int offset = 0;
+    for (int i = 0; i < indices.size(); i++)
+    {
+        data[offset] = indices[i].x;
+        data[offset + 1] = indices[i].y;
+        data[offset + 2] = indices[i].z;
+        offset += 3;
+    }
+    return data;
 }
+
 void Block::SetupResources()
 {
 }
 void Block::Draw()
 {
-    std::cout << "piirtää :)" << std::endl;
 }
