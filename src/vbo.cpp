@@ -1,4 +1,7 @@
-#include <vbo.hpp>
+#include "vbo.hpp"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 Vbo::Vbo(float* vertices, size_t size)
 {

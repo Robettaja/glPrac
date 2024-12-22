@@ -1,5 +1,10 @@
 #include "texture.hpp"
 
+#include <iostream>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <stb_image.h>
+
 Texture::Texture(const char* path)
 {
     glActiveTexture(GL_TEXTURE0);

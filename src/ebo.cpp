@@ -1,5 +1,8 @@
 #include "ebo.hpp"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 Ebo::Ebo(unsigned int* indices, size_t size)
 {
     glGenBuffers(1, &ID);

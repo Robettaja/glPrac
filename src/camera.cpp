@@ -1,6 +1,9 @@
 #include "camera.hpp"
+
 #include <GLFW/glfw3.h>
 #include <glm/fwd.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 Camera::Camera(glm::vec3 position, float width, float height)
 {

@@ -1,4 +1,7 @@
-#include <vao.hpp>
+#include "vao.hpp"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 Vao::Vao()
 {

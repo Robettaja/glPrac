@@ -1,7 +1,4 @@
 #pragma once
-#include <cstddef>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 class Vbo
 {

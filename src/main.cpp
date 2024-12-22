@@ -1,26 +1,22 @@
-#include "texture.hpp"
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/detail/qualifier.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-
-#include <glm/fwd.hpp>
-#include <glm/geometric.hpp>
-#include <glm/trigonometric.hpp>
-#include <iostream>
-#include <cmath>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include "vbo.hpp"
 #include "vao.hpp"
-#include "ebo.hpp"
-#include <shader.h>
-
+#include "shader.hpp"
 #include "camera.hpp"
+#include "texture.hpp"
+
+#include <iostream>
+#include <GLFW/glfw3.h>
+#include <glm/detail/qualifier.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/fwd.hpp>
+#include <glm/geometric.hpp>
+#include <glm/trigonometric.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <stb_image.h>
 
 int winWidth = 800;
 int winHeight = 600;
