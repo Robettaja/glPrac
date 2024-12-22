@@ -1,9 +1,15 @@
 {
   "dependencies": [
-    "glad",
+    {
+      "name": "glad",
+      "features": ["gl-api-latest", "loader"]
+    },
+    {
+      "name": "imgui",
+      "features": ["docking-experimental", "glfw-binding", "opengl3-binding"]
+    },
     "glfw3",
     "glm",
-    "imgui",
     "stb",
     "assimp"
   ]
