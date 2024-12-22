@@ -4,7 +4,7 @@
 
 Camera::Camera(glm::vec3 position, float width, float height)
 {
-    cameraPos = position;
+    this->position = position;
     orientation = glm::vec3(0, 0, -1);
     camUp = glm::vec3(0, 1, 0);
     camRight = glm::normalize(glm::cross(orientation, camUp));
@@ -26,11 +26,12 @@ Camera::Camera(glm::vec3 position, float width, float height)
 void Camera::UpdateAndSendMatricies(Shader& shader, float width, float height)
 {
     projection = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
-    view = glm::lookAt(cameraPos, cameraPos + orientation, camUp);
+    view = glm::lookAt(position, position + orientation, camUp);
 
     glm::mat4 projectionView = projection * view;
     shader.setMat4("projectionView", projectionView);
 }
+
 void Camera::MoveCamera(GLFWwindow* window)
 {
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
@@ -43,32 +44,32 @@ void Camera::MoveCamera(GLFWwindow* window)
         }
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
-            cameraPos += orientation * speed;
+            position += orientation * speed;
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         {
-
-            cameraPos -= orientation * speed;
+            position -= orientation * speed;
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         {
-            cameraPos += camRight * speed;
+            position += camRight * speed;
         }
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         {
-            cameraPos -= camRight * speed;
+            position -= camRight * speed;
         }
         RotateCamera(window);
     }
     else
     {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        if (!firstClick)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         firstClick = true;
     }
 }
+
 void Camera::RotateCamera(GLFWwindow* window)
 {
-
     double mouseX, mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);
 

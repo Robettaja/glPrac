@@ -15,7 +15,7 @@ class Camera
     double yaw, pitch;
 
   public:
-    glm::vec3 cameraPos;
+    glm::vec3 position;
     glm::vec3 orientation;
     glm::vec3 camRight, camUp;
     float sensitivity, speed;
