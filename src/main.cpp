@@ -1,11 +1,8 @@
 #include <glad/glad.h>
 
 #include "block.hpp"
-#include "vbo.hpp"
-#include "vao.hpp"
 #include "shader.hpp"
 #include "camera.hpp"
-#include "texture.hpp"
 
 #include <iostream>
 #include <GLFW/glfw3.h>
@@ -17,7 +14,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <stb_image.h>
 
 int winWidth = 800;
@@ -64,29 +60,24 @@ int main()
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
     }
-
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
+    // glEnable(GL_CULL_FACE);
+    // glCullFace(GL_FRONT);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     Camera cam(glm::vec3(0, 0, 3), winWidth, winHeight);
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
 
-    Block block(glm::vec3(0, 0, 0));
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        shader.use();
+
         cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
         cam.MoveCamera(window);
-        block.Draw();
 
-        // GLCheckError();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

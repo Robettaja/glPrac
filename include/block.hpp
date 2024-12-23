@@ -1,6 +1,8 @@
 #pragma once
 
 #include "vao.hpp"
+#include "vbo.hpp"
+#include "ebo.hpp"
 #include "shader.hpp"
 #include <glm/glm.hpp>
 #include <glm/fwd.hpp>
@@ -21,5 +23,5 @@ class Block
   public:
     Block(glm::vec3 position);
     ~Block();
-    void Draw();
+    void Draw(Shader& shader);
 };
