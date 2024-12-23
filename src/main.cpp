@@ -15,23 +15,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <stb_image.h>
+#include <vector>
 
 int winWidth = 800;
 int winHeight = 600;
 
-static void GLClearError()
-{
-    while (glGetError() != GL_NO_ERROR)
-        ;
-}
-
-static void GLCheckError()
-{
-    while (GLenum error = glGetError())
-    {
-        std::cout << error << "\n";
-    }
-}
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     winWidth = width;
@@ -70,6 +58,20 @@ int main()
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
 
+    std::vector<Block*> blocks;
+    int size = 16;
+    for (size_t i = 0; i < size; i++)
+    {
+        for (size_t j = 0; j < size; j++)
+        {
+            for (size_t k = 0; k < size; k++)
+            {
+                Block* block = new Block(glm::vec3(i * 2, j * 2, k * 2));
+                blocks.emplace_back(block);
+            }
+        }
+    }
+
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -78,8 +80,17 @@ int main()
         cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
         cam.MoveCamera(window);
 
+        for (size_t i = 0; i < blocks.size(); i++)
+        {
+            blocks[i]->Draw(shader);
+        }
+
         glfwSwapBuffers(window);
         glfwPollEvents();
+    }
+    for (size_t i = 0; i < blocks.size(); i++)
+    {
+        delete blocks[i];
     }
     glfwTerminate();
     return 0;

@@ -28,7 +28,6 @@ Block::~Block()
 }
 std::vector<float>* Block::AssignVertexData()
 {
-    //    std::shared_ptr<Shader> shader =;
     std::vector<glm::vec3> positions;
     positions.emplace_back(glm::vec3(-1, -1, -1));
     positions.emplace_back(glm::vec3(1, -1, -1));
