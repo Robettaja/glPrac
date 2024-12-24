@@ -1,17 +1,28 @@
 #pragma once
 
 #include "vao.hpp"
-#include "vbo.hpp"
-#include "ebo.hpp"
 #include "shader.hpp"
 #include <glm/glm.hpp>
 #include <glm/fwd.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
+enum BlockType
+{
+    Default = 0,
+    Grass,
+    Dirt,
+    Water,
+    Stone,
+    Wood,
+    Sand,
+    Joni,
+};
+
 class Block
 {
   private:
+    BlockType blockType;
     glm::mat4 model;
     Vao vao;
     std::vector<float>* vertexData;
@@ -24,4 +35,6 @@ class Block
     Block(glm::vec3 position);
     ~Block();
     void Draw(Shader& shader);
+    void SetActive();
+    bool IsActive();
 };
