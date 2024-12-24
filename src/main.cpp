@@ -30,7 +30,14 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 int main()
 {
     // We initialize glfw so we can use it
-    glfwInit();
+    if (!glfwInit())
+    {
+        const char* description;
+        int error = glfwGetError(&description);
+        std::cout << "Error: " << error << " Description: " << description << std::endl;
+        std::cout << "Failed to initialize GLFW" << std::endl;
+        return -1;
+    }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -40,6 +47,9 @@ int main()
     GLFWwindow* window = glfwCreateWindow(winWidth, winHeight, "OpenGL Harjoitus", NULL, NULL);
     if (window == NULL)
     {
+        const char* description;
+        int error = glfwGetError(&description);
+        std::cout << "Error: " << error << " Description: " << description << std::endl;
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
@@ -49,6 +59,8 @@ int main()
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
+        glfwTerminate();
+        return -1;
     }
     glEnable(GL_DEPTH_TEST);
     // glEnable(GL_CULL_FACE);
