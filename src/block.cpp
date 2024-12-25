@@ -2,17 +2,14 @@
 
 #include "block.hpp"
 #include "shader.hpp"
-#include "vbo.hpp"
 #include "vao.hpp"
-#include "ebo.hpp"
 #include "texture.hpp"
 #include <iostream>
 
 #include <glm/fwd.hpp>
-#include <memory>
 #include <vector>
 
-Block::Block(glm::vec3 position)
+Block::Block(glm::vec3 position, const char* texturePath)
 {
     model = glm::mat4(1);
     vertexData = AssignVertexData();
@@ -113,13 +110,13 @@ void Block::SetupResources()
     unsigned int* iData = indices->data();
 
     vao.Bind();
-    Vbo vbo(vData, vertexData->size() * sizeof(float));
-    Ebo ebo(iData, indices->size() * sizeof(unsigned int));
-    vao.LinkVbo(vbo);
+    // Vbo vbo(vData, vertexData->size() * sizeof(float));
+    // Ebo ebo(iData);
+    // vao.LinkVbo(vbo);
 
     vao.UnBind();
-    vbo.UnBind();
-    ebo.UnBind();
+    // vbo.UnBind();
+    // ebo.UnBind();
 
     Texture texture("textures/cool.png");
     texture.Bind();

@@ -1,5 +1,4 @@
 #include "vao.hpp"
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -23,10 +22,12 @@ void Vao::UnBind()
 void Vao::LinkVbo(Vbo& vbo)
 {
     vbo.Bind();
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     vbo.UnBind();
 }

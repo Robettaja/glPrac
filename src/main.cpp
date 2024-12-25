@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 
-#include "block.hpp"
 #include "shader.hpp"
 #include "camera.hpp"
+#include "renderer.hpp"
 
 #include <cstddef>
 #include <iostream>
@@ -26,6 +26,97 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     winWidth = width;
     winHeight = height;
     glViewport(0, 0, width, height);
+}
+
+std::vector<Vertex> generatePyramidVertices()
+{
+    std::vector<Vertex> vertices;
+
+    // Define the positions of the pyramid
+    glm::vec3 apex(0.0f, 1.0f, 0.0f);    // Top point
+    glm::vec3 base0(-0.5f, 0.0f, -0.5f); // Bottom-left of the base
+    glm::vec3 base1(0.5f, 0.0f, -0.5f);  // Bottom-right of the base
+    glm::vec3 base2(0.5f, 0.0f, 0.5f);   // Top-right of the base
+    glm::vec3 base3(-0.5f, 0.0f, 0.5f);  // Top-left of the base
+
+    // Normals for each face
+    glm::vec3 normalFront = glm::normalize(glm::vec3(0.0f, 0.5f, -0.5f));
+    glm::vec3 normalRight = glm::normalize(glm::vec3(0.5f, 0.5f, 0.0f));
+    glm::vec3 normalBack = glm::normalize(glm::vec3(0.0f, 0.5f, 0.5f));
+    glm::vec3 normalLeft = glm::normalize(glm::vec3(-0.5f, 0.5f, 0.0f));
+    glm::vec3 normalBottom(0.0f, -1.0f, 0.0f);
+
+    // UV coordinates for each vertex
+    glm::vec2 uvApex(0.5f, 1.0f);
+    glm::vec2 uvBase0(0.0f, 0.0f);
+    glm::vec2 uvBase1(1.0f, 0.0f);
+    glm::vec2 uvBase2(1.0f, 1.0f);
+    glm::vec2 uvBase3(0.0f, 1.0f);
+
+    // Front face (apex, base0, base1)
+    vertices.push_back({apex, uvApex, normalFront});
+    vertices.push_back({base0, uvBase0, normalFront});
+    vertices.push_back({base1, uvBase1, normalFront});
+
+    // Right face (apex, base1, base2)
+    vertices.push_back({apex, uvApex, normalRight});
+    vertices.push_back({base1, uvBase0, normalRight});
+    vertices.push_back({base2, uvBase1, normalRight});
+
+    // Back face (apex, base2, base3)
+    vertices.push_back({apex, uvApex, normalBack});
+    vertices.push_back({base2, uvBase0, normalBack});
+    vertices.push_back({base3, uvBase1, normalBack});
+
+    // Left face (apex, base3, base0)
+    vertices.push_back({apex, uvApex, normalLeft});
+    vertices.push_back({base3, uvBase0, normalLeft});
+    vertices.push_back({base0, uvBase1, normalLeft});
+
+    // Bottom face (base0, base1, base2, base3)
+    vertices.push_back({base0, uvBase0, normalBottom});
+    vertices.push_back({base1, uvBase1, normalBottom});
+    vertices.push_back({base2, uvBase2, normalBottom});
+    vertices.push_back({base0, uvBase0, normalBottom});
+    vertices.push_back({base2, uvBase2, normalBottom});
+    vertices.push_back({base3, uvBase3, normalBottom});
+
+    return vertices;
+}
+
+std::vector<unsigned int> generatePyramidIndices()
+{
+    std::vector<unsigned int> indices;
+
+    // Front face
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(2);
+
+    // Right face
+    indices.push_back(3);
+    indices.push_back(4);
+    indices.push_back(5);
+
+    // Back face
+    indices.push_back(6);
+    indices.push_back(7);
+    indices.push_back(8);
+
+    // Left face
+    indices.push_back(9);
+    indices.push_back(10);
+    indices.push_back(11);
+
+    // Bottom face
+    indices.push_back(12);
+    indices.push_back(13);
+    indices.push_back(14);
+    indices.push_back(15);
+    indices.push_back(16);
+    indices.push_back(17);
+
+    return indices;
 }
 int main()
 {
@@ -71,19 +162,11 @@ int main()
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
 
-    std::vector<Block*> blocks;
-    int size = 16;
-    for (size_t i = 0; i < size; i++)
-    {
-        for (size_t j = 0; j < size; j++)
-        {
-            for (size_t k = 0; k < size; k++)
-            {
-                Block* block = new Block(glm::vec3(i * 2, j * 2, k * 2));
-                blocks.emplace_back(block);
-            }
-        }
-    }
+    std::vector<Vertex> vertices = generatePyramidVertices();
+    std::vector<unsigned int> indices = generatePyramidIndices();
+    std::vector<Texture> textures;
+    textures.emplace_back("textures/cool.png");
+    Renderer renderer(vertices, indices, textures);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -93,17 +176,10 @@ int main()
         cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
         cam.MoveCamera(window);
 
-        for (size_t i = 0; i < blocks.size(); i++)
-        {
-            blocks[i]->Draw(shader);
-        }
+        renderer.Draw(shader, glm::vec3(0.0f, 0.0f, 0.0f));
 
         glfwSwapBuffers(window);
         glfwPollEvents();
-    }
-    for (size_t i = 0; i < blocks.size(); i++)
-    {
-        delete blocks[i];
     }
     glfwTerminate();
     return 0;

@@ -32,7 +32,7 @@ class Block
     void SetupResources();
 
   public:
-    Block(glm::vec3 position);
+    Block(glm::vec3 position, const char* texturePath);
     ~Block();
     void Draw(Shader& shader);
     void SetActive();

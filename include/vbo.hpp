@@ -1,13 +1,14 @@
 #pragma once
 
-#include <cstddef>
+#include "vertex.hpp"
+#include <vector>
 
 class Vbo
 {
   public:
     unsigned int ID;
 
-    Vbo(float* vertices, size_t size);
+    Vbo(std::vector<Vertex> vertices);
     ~Vbo();
     void Bind();
     void UnBind();
