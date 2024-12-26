@@ -154,18 +154,18 @@ int main()
         return -1;
     }
     glEnable(GL_DEPTH_TEST);
-    // glEnable(GL_CULL_FACE);
-    // glCullFace(GL_FRONT);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    glm::vec3 lightPos(3.0f, 3.0f, 0.0f);
     Camera cam(glm::vec3(0, 0, 3), winWidth, winHeight);
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
+    shader.setVec3("lightPos", lightPos);
 
     std::vector<Vertex> vertices = generatePyramidVertices();
     std::vector<unsigned int> indices = generatePyramidIndices();
     std::vector<Texture> textures;
-    textures.emplace_back("textures/cool.png");
+    textures.emplace_back("textures/stone.jpg");
     Renderer renderer(vertices, indices, textures);
 
     while (!glfwWindowShouldClose(window))
