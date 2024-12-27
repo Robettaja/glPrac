@@ -9,6 +9,7 @@ find_package(imgui CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(assimp CONFIG REQUIRED)
 find_package(Stb REQUIRED)
+find_package(unofficial-openfbx CONFIG REQUIRED)
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -23,5 +24,6 @@ target_link_libraries(glprac PRIVATE glad::glad)
 target_link_libraries(glprac PRIVATE imgui::imgui)
 target_link_libraries(glprac PRIVATE glm::glm)
 target_link_libraries(glprac PRIVATE assimp::assimp)
+target_link_libraries(glprac PRIVATE unoffical::openfbx::openfbx)
 target_include_directories(glprac PRIVATE ${Stb_INCLUDE_DIR})
 

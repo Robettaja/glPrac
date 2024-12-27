@@ -7,7 +7,6 @@ class Chunk
 
   private:
     Block*** blocks;
-    std::vector<Vertex> vertices;
 
   public:
     static const int CHUNK_SIZE = 16;

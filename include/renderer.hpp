@@ -18,7 +18,8 @@ class Renderer
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
 
-    Renderer(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
+    Renderer(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures,
+             glm::vec3 pos);
     ~Renderer();
-    void Draw(Shader& shader, glm::vec3 pos);
+    void Draw(Shader shader);
 };

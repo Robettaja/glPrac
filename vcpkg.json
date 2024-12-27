@@ -1,16 +1,24 @@
 {
   "dependencies": [
+    "assimp",
     {
       "name": "glad",
-      "features": ["gl-api-latest", "loader"]
-    },
-    {
-      "name": "imgui",
-      "features": ["docking-experimental", "glfw-binding", "opengl3-binding"]
+      "features": [
+        "gl-api-latest",
+        "loader"
+      ]
     },
     "glfw3",
     "glm",
+    {
+      "name": "imgui",
+      "features": [
+        "docking-experimental",
+        "glfw-binding",
+        "opengl3-binding"
+      ]
+    },
     "stb",
-    "assimp"
+    "openfbx"
   ]
 }

@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 
 #include "shader.hpp"
+#include "chunk.hpp"
 #include "camera.hpp"
 #include "renderer.hpp"
 
@@ -28,96 +29,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-std::vector<Vertex> generatePyramidVertices()
-{
-    std::vector<Vertex> vertices;
-
-    // Define the positions of the pyramid
-    glm::vec3 apex(0.0f, 1.0f, 0.0f);    // Top point
-    glm::vec3 base0(-0.5f, 0.0f, -0.5f); // Bottom-left of the base
-    glm::vec3 base1(0.5f, 0.0f, -0.5f);  // Bottom-right of the base
-    glm::vec3 base2(0.5f, 0.0f, 0.5f);   // Top-right of the base
-    glm::vec3 base3(-0.5f, 0.0f, 0.5f);  // Top-left of the base
-
-    // Normals for each face
-    glm::vec3 normalFront = glm::normalize(glm::vec3(0.0f, 0.5f, -0.5f));
-    glm::vec3 normalRight = glm::normalize(glm::vec3(0.5f, 0.5f, 0.0f));
-    glm::vec3 normalBack = glm::normalize(glm::vec3(0.0f, 0.5f, 0.5f));
-    glm::vec3 normalLeft = glm::normalize(glm::vec3(-0.5f, 0.5f, 0.0f));
-    glm::vec3 normalBottom(0.0f, -1.0f, 0.0f);
-
-    // UV coordinates for each vertex
-    glm::vec2 uvApex(0.5f, 1.0f);
-    glm::vec2 uvBase0(0.0f, 0.0f);
-    glm::vec2 uvBase1(1.0f, 0.0f);
-    glm::vec2 uvBase2(1.0f, 1.0f);
-    glm::vec2 uvBase3(0.0f, 1.0f);
-
-    // Front face (apex, base0, base1)
-    vertices.push_back({apex, uvApex, normalFront});
-    vertices.push_back({base0, uvBase0, normalFront});
-    vertices.push_back({base1, uvBase1, normalFront});
-
-    // Right face (apex, base1, base2)
-    vertices.push_back({apex, uvApex, normalRight});
-    vertices.push_back({base1, uvBase0, normalRight});
-    vertices.push_back({base2, uvBase1, normalRight});
-
-    // Back face (apex, base2, base3)
-    vertices.push_back({apex, uvApex, normalBack});
-    vertices.push_back({base2, uvBase0, normalBack});
-    vertices.push_back({base3, uvBase1, normalBack});
-
-    // Left face (apex, base3, base0)
-    vertices.push_back({apex, uvApex, normalLeft});
-    vertices.push_back({base3, uvBase0, normalLeft});
-    vertices.push_back({base0, uvBase1, normalLeft});
-
-    // Bottom face (base0, base1, base2, base3)
-    vertices.push_back({base0, uvBase0, normalBottom});
-    vertices.push_back({base1, uvBase1, normalBottom});
-    vertices.push_back({base2, uvBase2, normalBottom});
-    vertices.push_back({base0, uvBase0, normalBottom});
-    vertices.push_back({base2, uvBase2, normalBottom});
-    vertices.push_back({base3, uvBase3, normalBottom});
-
-    return vertices;
-}
-
-std::vector<unsigned int> generatePyramidIndices()
-{
-    std::vector<unsigned int> indices;
-
-    // Front face
-    indices.push_back(0);
-    indices.push_back(1);
-    indices.push_back(2);
-
-    // Right face
-    indices.push_back(3);
-    indices.push_back(4);
-    indices.push_back(5);
-
-    // Back face
-    indices.push_back(6);
-    indices.push_back(7);
-    indices.push_back(8);
-
-    // Left face
-    indices.push_back(9);
-    indices.push_back(10);
-    indices.push_back(11);
-
-    // Bottom face
-    indices.push_back(12);
-    indices.push_back(13);
-    indices.push_back(14);
-    indices.push_back(15);
-    indices.push_back(16);
-    indices.push_back(17);
-
-    return indices;
-}
 int main()
 {
     // We initialize glfw so we can use it
@@ -162,11 +73,65 @@ int main()
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
     shader.setVec3("lightPos", lightPos);
 
-    std::vector<Vertex> vertices = generatePyramidVertices();
-    std::vector<unsigned int> indices = generatePyramidIndices();
+    std::vector<Vertex> vertices{
+        // Main side
+        Vertex{glm::vec3(-0.5f, -0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(0.5f, -0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(0.5f, 0.5f, 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(-0.5f, 0.5f, 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))},
+        // Bottom side
+        Vertex{glm::vec3(0.5f, -0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, -1, 0))},
+        Vertex{glm::vec3(-0.5f, -0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, -1, 0))},
+        Vertex{glm::vec3(-0.5f, -0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, -1, 0))},
+        Vertex{glm::vec3(0.5f, -0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, -1, 0))},
+        // Back Side
+        Vertex{glm::vec3(0.5f, -0.5f, -0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, -1))},
+        Vertex{glm::vec3(-0.5f, -0.5f, -0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, -1))},
+        Vertex{glm::vec3(0.5f, 0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, -1))},
+        Vertex{glm::vec3(-0.5f, 0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, -1))},
+        // Top Side
+        Vertex{glm::vec3(-0.5f, 0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 1, 0))},
+        Vertex{glm::vec3(0.5f, 0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 1, 0))},
+        Vertex{glm::vec3(0.5f, 0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 1, 0))},
+        Vertex{glm::vec3(-0.5f, 0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 1, 0))},
+        // Left Side
+        Vertex{glm::vec3(-0.5f, -0.5f, -0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(-1, 0, 0))},
+        Vertex{glm::vec3(-0.5f, -0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(-1, 0, 0))},
+        Vertex{glm::vec3(-0.5f, 0.5f, 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(-1, 0, 0))},
+        Vertex{glm::vec3(-0.5f, 0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(-1, 0, 0))},
+        // Right Side
+        Vertex{glm::vec3(0.5f, -0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(1, 0, 0))},
+        Vertex{glm::vec3(0.5f, -0.5f, -0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(1, 0, 0))},
+        Vertex{glm::vec3(0.5f, 0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(1, 0, 0))},
+        Vertex{glm::vec3(0.5f, 0.5f, 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(1, 0, 0))},
+
+    };
+    std::vector<unsigned int> indices{
+        // Main side
+        0, 1, 2, //
+        2, 3, 0, //
+        // Bottom side
+        4, 5, 6, //
+        6, 7, 4, //
+        // Back Side
+        8, 9, 10,  //
+        10, 11, 8, //
+        // Top Side
+        12, 13, 14, //
+        14, 15, 12, //
+        // Left Side
+        16, 17, 18, //
+        18, 19, 16, //
+        // Right Side
+        20, 21, 22, //
+        22, 23, 20, //
+
+    };
     std::vector<Texture> textures;
     textures.emplace_back("textures/stone.jpg");
-    Renderer renderer(vertices, indices, textures);
+    Renderer renderer(vertices, indices, textures, glm::vec3(0.0f, 0.0f, 0.0f));
+
+    Renderer renderer2(vertices, indices, textures, glm::vec3(1.0f, 0.0f, 0.0f));
 
     while (!glfwWindowShouldClose(window))
     {
@@ -175,8 +140,8 @@ int main()
 
         cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
         cam.MoveCamera(window);
-
-        renderer.Draw(shader, glm::vec3(0.0f, 0.0f, 0.0f));
+        renderer.Draw(shader);
+        renderer2.Draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
