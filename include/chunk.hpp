@@ -1,13 +1,14 @@
 #pragma once
 #include "renderer.hpp"
 #include "block.hpp"
+#include <glm/fwd.hpp>
 
 class Chunk
 {
 
   private:
     Block*** blocks;
-    // Renderer renderer;
+    Renderer* renderer;
 
   public:
     static const int CHUNK_SIZE = 16;
@@ -15,7 +16,7 @@ class Chunk
     Chunk();
     ~Chunk();
     void CreateMesh();
-    void CreateBlock(int x, int z);
+    void CreateBlock(int x, int z, int cubeIndex);
     void Update();
-    void Render(Renderer* renderer);
+    void Render(Shader& shader);
 };

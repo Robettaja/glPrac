@@ -16,5 +16,5 @@ void main()
 
     float diff = max(dot(norm, lightDir), 0.0);
 
-    FragColor = texture(ourTexture, TexCoord) * (diff + 0.2);
+    FragColor = texture(ourTexture, TexCoord);
 }

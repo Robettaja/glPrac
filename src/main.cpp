@@ -130,10 +130,10 @@ int main()
 
     };
     std::vector<Texture> textures;
-    textures.emplace_back("textures/stone.jpg");
+    textures.emplace_back("textures/grass.jpg");
     Renderer renderer(vertices, indices, textures, glm::vec3(0.0f, 0.0f, 0.0f));
-
-    Renderer renderer2(vertices, indices, textures, glm::vec3(1.0f, 0.0f, 0.0f));
+    Chunk chunk;
+    chunk.CreateMesh();
 
     Renderer light(vertices, indices, textures, lightPos);
 
@@ -145,7 +145,7 @@ int main()
         cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
         cam.MoveCamera(window);
         renderer.Draw(shader);
-        renderer2.Draw(shader);
+        chunk.Render(shader);
         light.Draw(shader);
 
         glfwSwapBuffers(window);

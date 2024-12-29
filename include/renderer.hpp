@@ -26,5 +26,6 @@ class Renderer
     void LinkRenderData();
     void AddVertices(std::vector<Vertex> vertexData);
     void AddIndices(std::vector<unsigned int> indicesData);
+    void SetPosition(glm::vec3 pos);
     void Draw(Shader shader);
 };

@@ -49,6 +49,11 @@ void Renderer::AddIndices(std::vector<unsigned int> indicesData)
 {
     indices.insert(indices.end(), indicesData.begin(), indicesData.end());
 }
+void Renderer::SetPosition(glm::vec3 pos)
+{
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, pos);
+}
 void Renderer::Draw(Shader shader)
 {
     vao.Bind();
