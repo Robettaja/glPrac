@@ -7,6 +7,7 @@ class Chunk
 
   private:
     Block*** blocks;
+    // Renderer renderer;
 
   public:
     static const int CHUNK_SIZE = 16;
@@ -14,7 +15,7 @@ class Chunk
     Chunk();
     ~Chunk();
     void CreateMesh();
-    void CreateBlock();
+    void CreateBlock(int x, int z);
     void Update();
     void Render(Renderer* renderer);
 };

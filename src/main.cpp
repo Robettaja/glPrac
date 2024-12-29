@@ -4,6 +4,8 @@
 #include "chunk.hpp"
 #include "camera.hpp"
 #include "renderer.hpp"
+#include "modelLoader.hpp"
+#include "vertex.hpp"
 
 #include <cstddef>
 #include <iostream>
@@ -90,10 +92,10 @@ int main()
         Vertex{glm::vec3(0.5f, 0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, -1))},
         Vertex{glm::vec3(-0.5f, 0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, -1))},
         // Top Side
-        Vertex{glm::vec3(-0.5f, 0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 1, 0))},
-        Vertex{glm::vec3(0.5f, 0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 1, 0))},
-        Vertex{glm::vec3(0.5f, 0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 1, 0))},
-        Vertex{glm::vec3(-0.5f, 0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 1, 0))},
+        Vertex{glm::vec3(-0.5f, 0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(0.5f, 0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(0.5f, 0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(-0.5f, 0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))},
         // Left Side
         Vertex{glm::vec3(-0.5f, -0.5f, -0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(-1, 0, 0))},
         Vertex{glm::vec3(-0.5f, -0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(-1, 0, 0))},
@@ -133,6 +135,8 @@ int main()
 
     Renderer renderer2(vertices, indices, textures, glm::vec3(1.0f, 0.0f, 0.0f));
 
+    Renderer light(vertices, indices, textures, lightPos);
+
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -142,6 +146,7 @@ int main()
         cam.MoveCamera(window);
         renderer.Draw(shader);
         renderer2.Draw(shader);
+        light.Draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

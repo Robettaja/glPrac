@@ -18,7 +18,8 @@
         "opengl3-binding"
       ]
     },
+    "openfbx",
     "stb",
-    "openfbx"
+    "libdeflate"
   ]
 }
