@@ -13,10 +13,11 @@ class Chunk
   public:
     static const int CHUNK_SIZE = 16;
 
-    Chunk();
+    Chunk(glm::vec3 worldPos);
     ~Chunk();
+    void SetBlockTypes();
     void CreateMesh();
-    void CreateBlock(int x, int z, int cubeIndex);
+    void CreateBlock(int x, int y, int z, int cubeIndex);
     void Update();
     void Render(Shader& shader);
 };

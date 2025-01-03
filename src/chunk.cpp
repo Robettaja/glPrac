@@ -1,16 +1,18 @@
 #include "chunk.hpp"
 #include "renderer.hpp"
 #include "shader.hpp"
-#include "texture.hpp"
 #include "vertex.hpp"
+#include <cstdlib>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
+#include <glm/gtc/noise.hpp>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
-Chunk::Chunk()
+Chunk::Chunk(glm::vec3 worldPos)
 {
-    renderer = new Renderer(glm::vec3(0, 0, 0));
+    renderer = new Renderer(worldPos);
     blocks = new Block**[CHUNK_SIZE];
     for (size_t i = 0; i < CHUNK_SIZE; i++)
     {
@@ -20,6 +22,7 @@ Chunk::Chunk()
             blocks[i][j] = new Block[CHUNK_SIZE];
         }
     }
+    SetBlockTypes();
 }
 Chunk::~Chunk()
 {
@@ -34,6 +37,31 @@ Chunk::~Chunk()
     delete[] blocks;
     delete renderer;
 }
+void Chunk::SetBlockTypes()
+{
+    for (size_t x = 0; x < CHUNK_SIZE; x++)
+    {
+        for (size_t y = 0; y < CHUNK_SIZE; y++)
+        {
+
+            for (size_t z = 0; z < CHUNK_SIZE; z++)
+            {
+                float noiseValue = std::abs(glm::perlin(glm::vec2(x, z) * (float)(1.0f / CHUNK_SIZE)));
+                int heightMap = noiseValue * 5;
+                if (y == CHUNK_SIZE / 2 - heightMap)
+                {
+                    std::cout << "HeightMap: " << heightMap << std::endl;
+                    blocks[x][y][z].SetBlockType(BlockType::Grass);
+                }
+                else
+                {
+
+                    blocks[x][y][z].SetBlockType(BlockType::Air);
+                }
+            }
+        }
+    }
+}
 void Chunk::CreateMesh()
 {
     int counter = 0;
@@ -46,46 +74,47 @@ void Chunk::CreateMesh()
             {
                 if (blocks[x][y][z].IsActive() == false)
                     continue;
+
+                CreateBlock(chunkStart - x, chunkStart - y, chunkStart - z, counter);
+                counter++;
             }
-            CreateBlock(chunkStart - x, chunkStart - y, counter);
-            counter++;
         }
     }
     renderer->LinkRenderData();
 }
-void Chunk::CreateBlock(int x, int z, int cubeIndex)
+void Chunk::CreateBlock(int x, int y, int z, int cubeIndex)
 {
     std::vector<Vertex> vertices{
         // Main side
-        Vertex{glm::vec3(x - 0.5f, -0.5f, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(x + 0.5f, -0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(x + 0.5f, 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(x - 0.5f, 0.5f, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(x - 0.5f, y - 0.5f, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(x + 0.5f, y - 0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(x + 0.5f, y + 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(x - 0.5f, y + 0.5f, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))},
         // Bottom side
-        Vertex{glm::vec3(x + 0.5f, -0.5f, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, -1, 0))},
-        Vertex{glm::vec3(x - 0.5f, -0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, -1, 0))},
-        Vertex{glm::vec3(x - 0.5f, -0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, -1, 0))},
-        Vertex{glm::vec3(x + 0.5f, -0.5f, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, -1, 0))},
-        // Back Sid
-        Vertex{glm::vec3(x + 0.5f, -0.5f, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, -1))},
-        Vertex{glm::vec3(x - 0.5f, -0.5f, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, -1))},
-        Vertex{glm::vec3(x + 0.5f, 0.5f, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, -1))},
-        Vertex{glm::vec3(x - 0.5f, 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, -1))},
+        Vertex{glm::vec3(x + 0.5f, y - 0.5f, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, -1, 0))},
+        Vertex{glm::vec3(x - 0.5f, y - 0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, -1, 0))},
+        Vertex{glm::vec3(x - 0.5f, y - 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, -1, 0))},
+        Vertex{glm::vec3(x + 0.5f, y - 0.5f, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, -1, 0))},
+        // Back Side
+        Vertex{glm::vec3(x + 0.5f, y - 0.5f, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, -1))},
+        Vertex{glm::vec3(x - 0.5f, y - 0.5f, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, -1))},
+        Vertex{glm::vec3(x - 0.5f, y + 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, -1))},
+        Vertex{glm::vec3(x + 0.5f, y + 0.5f, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, -1))},
         // Top Side
-        Vertex{glm::vec3(x - 0.5f, 0.5f, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(x + 0.5f, 0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(x + 0.5f, 0.5f, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(x - 0.5f, 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(x - 0.5f, y + 0.5f, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(x + 0.5f, y + 0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(x + 0.5f, y + 0.5f, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))},
+        Vertex{glm::vec3(x - 0.5f, y + 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))},
         // Left Side
-        Vertex{glm::vec3(x - 0.5f, -0.5f, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(-1, 0, 0))},
-        Vertex{glm::vec3(x - 0.5f, -0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(-1, 0, 0))},
-        Vertex{glm::vec3(x - 0.5f, 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(-1, 0, 0))},
-        Vertex{glm::vec3(x - 0.5f, 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(-1, 0, 0))},
+        Vertex{glm::vec3(x - 0.5f, y - 0.5f, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(-1, 0, 0))},
+        Vertex{glm::vec3(x - 0.5f, y - 0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(-1, 0, 0))},
+        Vertex{glm::vec3(x - 0.5f, y + 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(-1, 0, 0))},
+        Vertex{glm::vec3(x - 0.5f, y + 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(-1, 0, 0))},
         // Right Side
-        Vertex{glm::vec3(x + 0.5f, -0.5f, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(1, 0, 0))},
-        Vertex{glm::vec3(x + 0.5f, -0.5f, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(1, 0, 0))},
-        Vertex{glm::vec3(x + 0.5f, 0.5f, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(1, 0, 0))},
-        Vertex{glm::vec3(x + 0.5f, 0.5f, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(1, 0, 0))},
+        Vertex{glm::vec3(x + 0.5f, y - 0.5f, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(1, 0, 0))},
+        Vertex{glm::vec3(x + 0.5f, y - 0.5f, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(1, 0, 0))},
+        Vertex{glm::vec3(x + 0.5f, y + 0.5f, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(1, 0, 0))},
+        Vertex{glm::vec3(x + 0.5f, y + 0.5f, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(1, 0, 0))},
 
     };
     unsigned int cubeNum = 24 * cubeIndex;

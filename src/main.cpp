@@ -75,78 +75,19 @@ int main()
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
     shader.setVec3("lightPos", lightPos);
 
-    std::vector<Vertex> vertices{
-        // Main side
-        Vertex{glm::vec3(-0.5f, -0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(0.5f, -0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(0.5f, 0.5f, 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(-0.5f, 0.5f, 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))},
-        // Bottom side
-        Vertex{glm::vec3(0.5f, -0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, -1, 0))},
-        Vertex{glm::vec3(-0.5f, -0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, -1, 0))},
-        Vertex{glm::vec3(-0.5f, -0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, -1, 0))},
-        Vertex{glm::vec3(0.5f, -0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, -1, 0))},
-        // Back Side
-        Vertex{glm::vec3(0.5f, -0.5f, -0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, -1))},
-        Vertex{glm::vec3(-0.5f, -0.5f, -0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, -1))},
-        Vertex{glm::vec3(0.5f, 0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, -1))},
-        Vertex{glm::vec3(-0.5f, 0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, -1))},
-        // Top Side
-        Vertex{glm::vec3(-0.5f, 0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(0.5f, 0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(0.5f, 0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))},
-        Vertex{glm::vec3(-0.5f, 0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))},
-        // Left Side
-        Vertex{glm::vec3(-0.5f, -0.5f, -0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(-1, 0, 0))},
-        Vertex{glm::vec3(-0.5f, -0.5f, 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(-1, 0, 0))},
-        Vertex{glm::vec3(-0.5f, 0.5f, 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(-1, 0, 0))},
-        Vertex{glm::vec3(-0.5f, 0.5f, -0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(-1, 0, 0))},
-        // Right Side
-        Vertex{glm::vec3(0.5f, -0.5f, 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(1, 0, 0))},
-        Vertex{glm::vec3(0.5f, -0.5f, -0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(1, 0, 0))},
-        Vertex{glm::vec3(0.5f, 0.5f, -0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(1, 0, 0))},
-        Vertex{glm::vec3(0.5f, 0.5f, 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(1, 0, 0))},
-
-    };
-    std::vector<unsigned int> indices{
-        // Main side
-        0, 1, 2, //
-        2, 3, 0, //
-        // Bottom side
-        4, 5, 6, //
-        6, 7, 4, //
-        // Back Side
-        8, 9, 10,  //
-        10, 11, 8, //
-        // Top Side
-        12, 13, 14, //
-        14, 15, 12, //
-        // Left Side
-        16, 17, 18, //
-        18, 19, 16, //
-        // Right Side
-        20, 21, 22, //
-        22, 23, 20, //
-
-    };
     std::vector<Texture> textures;
     textures.emplace_back("textures/grass.jpg");
-    Renderer renderer(vertices, indices, textures, glm::vec3(0.0f, 0.0f, 0.0f));
-    Chunk chunk;
+    Chunk chunk(glm::vec3(0, 0, -20));
     chunk.CreateMesh();
-
-    Renderer light(vertices, indices, textures, lightPos);
 
     while (!glfwWindowShouldClose(window))
     {
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
         cam.MoveCamera(window);
-        renderer.Draw(shader);
         chunk.Render(shader);
-        light.Draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -1,13 +1,12 @@
 #pragma once
 
-#include "shader.hpp"
 #include <glm/glm.hpp>
 #include <glm/fwd.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 enum BlockType
 {
     Default = 0,
+    Air,
     Grass,
     Dirt,
     Water,
@@ -26,5 +25,6 @@ class Block
     Block();
     ~Block();
     void SetActive();
+    void SetBlockType(BlockType type);
     bool IsActive();
 };
