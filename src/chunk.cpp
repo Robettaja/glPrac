@@ -13,6 +13,7 @@
 Chunk::Chunk(glm::vec3 worldPos)
 {
     renderer = new Renderer(worldPos);
+    chunkPos = worldPos;
     blocks = new Block**[CHUNK_SIZE];
     for (size_t i = 0; i < CHUNK_SIZE; i++)
     {
@@ -43,14 +44,13 @@ void Chunk::SetBlockTypes()
     {
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
-
             for (size_t z = 0; z < CHUNK_SIZE; z++)
             {
-                float noiseValue = std::abs(glm::perlin(glm::vec2(x, z) * (float)(1.0f / CHUNK_SIZE)));
-                int heightMap = noiseValue * 5;
+                float noiseValue =
+                    std::abs(glm::perlin(glm::vec2(chunkPos.x - x, chunkPos.z - z) * (float)(1.0f / CHUNK_SIZE)));
+                int heightMap = noiseValue * maxHeight;
                 if (y == CHUNK_SIZE / 2 - heightMap)
                 {
-                    std::cout << "HeightMap: " << heightMap << std::endl;
                     blocks[x][y][z].SetBlockType(BlockType::Grass);
                 }
                 else

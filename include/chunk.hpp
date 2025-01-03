@@ -9,9 +9,11 @@ class Chunk
   private:
     Block*** blocks;
     Renderer* renderer;
+    glm::vec3 chunkPos;
+    const int maxHeight = 25;
 
   public:
-    static const int CHUNK_SIZE = 16;
+    static const int CHUNK_SIZE = 64;
 
     Chunk(glm::vec3 worldPos);
     ~Chunk();

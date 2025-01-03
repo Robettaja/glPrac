@@ -67,6 +67,8 @@ int main()
         return -1;
     }
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     glm::vec3 lightPos(3.0f, 3.0f, 0.0f);
@@ -75,10 +77,12 @@ int main()
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
     shader.setVec3("lightPos", lightPos);
 
-    std::vector<Texture> textures;
-    textures.emplace_back("textures/grass.jpg");
+    Texture texture("textures/grass.jpg");
+    texture.Bind();
     Chunk chunk(glm::vec3(0, 0, -20));
     chunk.CreateMesh();
+    Chunk chunk2(glm::vec3(Chunk::CHUNK_SIZE, 0, -20));
+    chunk2.CreateMesh();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -88,6 +92,7 @@ int main()
         cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
         cam.MoveCamera(window);
         chunk.Render(shader);
+        chunk2.Render(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
