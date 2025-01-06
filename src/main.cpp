@@ -3,9 +3,7 @@
 #include "shader.hpp"
 #include "chunk.hpp"
 #include "camera.hpp"
-#include "renderer.hpp"
 #include "modelLoader.hpp"
-#include "vertex.hpp"
 
 #include <cstddef>
 #include <iostream>
@@ -92,7 +90,7 @@ int main()
         cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
         cam.MoveCamera(window);
         chunk.Render(shader);
-        chunk2.Render(shader);
+        // chunk2.Render(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

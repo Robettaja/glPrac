@@ -13,7 +13,6 @@ enum BlockType
     Stone,
     Wood,
     Sand,
-    Joni,
 };
 
 class Block
@@ -26,5 +25,7 @@ class Block
     ~Block();
     void SetActive();
     void SetBlockType(BlockType type);
+    BlockType GetBlockType();
     bool IsActive();
+    bool IsSolid();
 };

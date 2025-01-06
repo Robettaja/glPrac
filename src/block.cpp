@@ -20,3 +20,13 @@ void Block::SetBlockType(BlockType type)
 {
     blockType = type;
 }
+BlockType Block::GetBlockType()
+{
+    return blockType;
+}
+bool Block::IsSolid()
+{
+    if (blockType == Air || Default)
+        return false;
+    return true;
+}

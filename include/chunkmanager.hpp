@@ -3,9 +3,10 @@
 class ChunkManager
 {
   private:
-    Chunk** chunks;
+    std::vector<Chunk*> chunks;
 
   public:
+    void Update();
     void Load();
     void Unload();
 };
