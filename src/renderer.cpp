@@ -35,11 +35,6 @@ void Renderer::LinkRenderData()
     vao.UnBind();
     ebo.UnBind();
     vbo.UnBind();
-
-    for (Texture texture : textures)
-    {
-        texture.Bind();
-    }
 }
 void Renderer::AddVertices(std::vector<Vertex> vertexData)
 {

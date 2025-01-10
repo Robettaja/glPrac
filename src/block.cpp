@@ -23,11 +23,7 @@ BlockType Block::GetBlockType()
 {
     return blockType;
 }
-bool Block::IsSolid()
-{
-    return blockType != Air;
-}
 std::string Block::GetBlockData()
 {
-    return "Block type: " + std::to_string(blockType) + " " + std::to_string(IsSolid());
+    return "Block type: " + std::to_string(blockType) + " " + std::to_string(IsActive());
 }

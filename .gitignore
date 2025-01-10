@@ -64,3 +64,5 @@ CMakeFiles/
 # Others
 node_modules/
 .env
+
+.vs/

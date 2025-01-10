@@ -1,3 +1,4 @@
+#include "logger.hpp"
 #include "chunk.hpp"
 #include "block.hpp"
 #include "renderer.hpp"
@@ -7,6 +8,7 @@
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
 #include <glm/gtc/noise.hpp>
+#include <string>
 #include <vector>
 #include <cmath>
 #include <iostream>
@@ -52,7 +54,7 @@ void Chunk::SetBlockTypes()
                 //     std::abs(glm::perlin(glm::vec2(chunkPos.x - x, chunkPos.z - z) * (float)(1.0f / CHUNK_SIZE)));
                 // int heightMap = noiseValue * maxHeight;
                 int heightMap = 0;
-                if (y == 2)
+                if (y == 0)
                 {
                     counter++;
                     blocks[x][y][z].SetBlockType(BlockType::Grass);
@@ -160,6 +162,7 @@ void Chunk::CreateBlock(int x, int y, int z, int cubeIndex)
             Vertex{glm::vec3(x + 0.5f, y + 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(1, 0, 0))});
     }
     lastVertexSize = vertices.size();
+
     for (size_t i = 0; i < vertices.size(); i += 4)
     {
         indices.emplace_back(0 + cubeNum + i);
@@ -169,12 +172,15 @@ void Chunk::CreateBlock(int x, int y, int z, int cubeIndex)
         indices.emplace_back(3 + cubeNum + i);
         indices.emplace_back(0 + cubeNum + i);
     }
+    logger::log_info(std::to_string(vertices.size()));
+    // std::cout << vertices.size() << " " << indices.size() << std::endl;
     // std::cout << x << " " << y << " " << z << " " << blocks[x][y][z].GetBlockData() << std::endl;
     renderer->AddVertices(vertices);
     renderer->AddIndices(indices);
 }
 bool Chunk::IsFaceVisible(int x, int y, int z, FaceDirection faceDir)
 {
+    // return true;
     int nX = x, nY = y, nZ = z;
 
     switch (faceDir)
@@ -213,7 +219,9 @@ bool Chunk::IsFaceVisible(int x, int y, int z, FaceDirection faceDir)
         return false;
     }
 
-    return !blocks[nX][nY][nZ].IsSolid();
+    // if (faceDir == FaceDirection::Up)
+    //     std::cout << x << " " << y << " " << z << " " << !blocks[nX][nY][nZ].IsSolid() << std::endl;
+    return !blocks[nX][nY][nZ].IsActive();
 }
 void Chunk::Render(Shader& shader)
 {

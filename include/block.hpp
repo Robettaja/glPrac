@@ -28,5 +28,4 @@ class Block
     BlockType GetBlockType();
     std::string GetBlockData();
     bool IsActive();
-    bool IsSolid();
 };

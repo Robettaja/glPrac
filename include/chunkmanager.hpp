@@ -1,3 +1,4 @@
+#pragma once
 #include "chunk.hpp"
 
 class ChunkManager
