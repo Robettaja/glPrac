@@ -63,7 +63,7 @@ int main()
     glCullFace(GL_BACK);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    glm::vec3 lightPos(3.0f, 3.0f, 0.0f);
+    glm::vec3 lightPos(Chunk::CHUNK_SIZE / 2, 9.0f, Chunk::CHUNK_SIZE / 2);
     Camera cam(glm::vec3(0, 0, 3), winWidth, winHeight);
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
@@ -73,6 +73,8 @@ int main()
     texture.Bind();
     Chunk chunk(glm::vec3(0, 0, -20));
     chunk.CreateMesh();
+    Chunk chunk2(glm::vec3(Chunk::CHUNK_SIZE, 0, -20));
+    chunk2.CreateMesh();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -82,7 +84,7 @@ int main()
         cam.UpdateAndSendMatrices(shader, winWidth, winHeight);
         cam.MoveCamera(window);
         chunk.Render(shader);
-        // chunk2.Render(shader);
+        chunk2.Render(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

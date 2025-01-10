@@ -1,3 +1,4 @@
+#include "timer.hpp"
 #include "logger.hpp"
 #include "chunk.hpp"
 #include "block.hpp"
@@ -11,9 +12,11 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
-
+static Timer chunk_creation_timer = Timer("ChunkCreation");
+static Timer chunk_block_gen_timer = Timer("ChunkBlockGen");
 Chunk::Chunk(const glm::vec3 worldPos) : chunkPos(worldPos)
 {
+    chunk_creation_timer.start();
     renderer = new Renderer(worldPos);
     blocks = new Block**[CHUNK_SIZE];
     for (size_t x = 0; x < CHUNK_SIZE; x++)
@@ -25,6 +28,7 @@ Chunk::Chunk(const glm::vec3 worldPos) : chunkPos(worldPos)
         }
     }
     SetBlockTypes();
+    chunk_creation_timer.stop();
 }
 Chunk::~Chunk()
 {
@@ -51,7 +55,7 @@ void Chunk::SetBlockTypes()
                 //     std::abs(glm::perlin(glm::vec2(chunkPos.x - x, chunkPos.z - z) * (float)(1.0f / CHUNK_SIZE)));
                 // int heightMap = noiseValue * maxHeight;
                 int heightMap = 0;
-                if (y == 0)
+                if (y == 1)
                 {
                     blocks[x][y][z].SetBlockType(BlockType::Grass);
                 }
@@ -65,6 +69,7 @@ void Chunk::SetBlockTypes()
 }
 void Chunk::CreateMesh()
 {
+    chunk_block_gen_timer.start();
     int counter = 0;
     for (int x = 0; x < CHUNK_SIZE; x++)
     {
@@ -82,6 +87,7 @@ void Chunk::CreateMesh()
     }
     renderer->LinkRenderData();
     lastVertexSize = 0;
+    chunk_block_gen_timer.stop();
 }
 void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeIndex)
 {
@@ -166,8 +172,12 @@ void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeInd
         indices.emplace_back(3 + verticeCount + i);
         indices.emplace_back(0 + verticeCount + i);
     }
+    // logger::log_info(std::to_string(vertices.size()));
+    // std::cout << vertices.size() << " " << indices.size() << std::endl;
+    // std::cout << x << " " << y << " " << z << " " << blocks[x][y][z].GetBlockData() << std::endl;
     renderer->AddVertices(vertices);
     renderer->AddIndices(indices);
+    chunk_block_gen_timer.reset();
 }
 void Chunk::Update()
 {

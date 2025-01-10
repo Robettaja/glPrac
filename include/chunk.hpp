@@ -27,7 +27,7 @@ class Chunk
     bool IsFaceVisible(int x, int y, int z, FaceDirection faceDir) const;
 
   public:
-    static constexpr int CHUNK_SIZE = 2;
+    static constexpr int CHUNK_SIZE = 128;
 
     explicit Chunk(glm::vec3 worldPos);
     ~Chunk();

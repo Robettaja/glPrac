@@ -3,7 +3,7 @@
 
 class logger
 {
-  public:
+public:
     static void* console;
     static void init();
     static void log_name();
