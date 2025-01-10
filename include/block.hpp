@@ -1,9 +1,8 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/fwd.hpp>
 #include <string>
-enum BlockType
+
+enum class BlockType
 {
     Default = 0,
     Air,
@@ -23,9 +22,8 @@ class Block
   public:
     Block();
     ~Block();
-    void SetActive();
     void SetBlockType(BlockType type);
-    BlockType GetBlockType();
-    std::string GetBlockData();
-    bool IsActive();
+    BlockType GetBlockType() const;
+    std::string GetBlockData() const;
+    bool IsActive() const;
 };

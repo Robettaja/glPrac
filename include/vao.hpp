@@ -5,11 +5,11 @@
 class Vao
 {
   public:
-    unsigned int ID;
+    unsigned int ID = 0;
     Vao();
     ~Vao();
-    void Bind();
-    void UnBind();
-    void Delete();
-    void LinkVbo(Vbo& vbo);
+    void Bind() const;
+    void UnBind() const;
+    void Delete() const;
+    void LinkVbo(Vbo& vbo) const;
 };

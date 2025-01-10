@@ -7,25 +7,17 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
-Renderer::Renderer(glm::vec3 pos)
+Renderer::Renderer(const glm::vec3 pos) : model(glm::translate(glm::mat4(1.0f), pos))
 {
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, pos);
 }
-Renderer::Renderer(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures,
-                   glm::vec3 pos)
+Renderer::Renderer(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices,
+                   const std::vector<Texture>& textures, const glm::vec3 pos)
+    : vertices(vertices), indices(indices), textures(textures), model(glm::translate(glm::mat4(1.0f), pos))
 {
-    this->vertices = vertices;
-    this->indices = indices;
-    this->textures = textures;
-
     LinkRenderData();
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, pos);
 }
-Renderer::~Renderer()
-{
-}
+Renderer::~Renderer() = default;
+
 void Renderer::LinkRenderData()
 {
     vao.Bind();
@@ -36,23 +28,22 @@ void Renderer::LinkRenderData()
     ebo.UnBind();
     vbo.UnBind();
 }
-void Renderer::AddVertices(std::vector<Vertex> vertexData)
+void Renderer::AddVertices(const std::vector<Vertex>& vertexData)
 {
     vertices.insert(vertices.end(), vertexData.begin(), vertexData.end());
 }
-void Renderer::AddIndices(std::vector<unsigned int> indicesData)
+void Renderer::AddIndices(const std::vector<unsigned int>& indicesData)
 {
     indices.insert(indices.end(), indicesData.begin(), indicesData.end());
 }
-void Renderer::SetPosition(glm::vec3 pos)
+void Renderer::SetPosition(const glm::vec3 pos)
 {
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, pos);
+    model = glm::translate(glm::mat4(1.0f), pos);
 }
-void Renderer::Draw(Shader shader)
+void Renderer::Draw(const Shader& shader) const
 {
     vao.Bind();
     shader.use();
     shader.setMat4("model", model);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
 }

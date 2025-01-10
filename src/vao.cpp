@@ -11,15 +11,15 @@ Vao::~Vao()
 {
     Delete();
 }
-void Vao::Bind()
+void Vao::Bind() const
 {
     glBindVertexArray(ID);
 }
-void Vao::UnBind()
+void Vao::UnBind() const
 {
     glBindVertexArray(0);
 }
-void Vao::LinkVbo(Vbo& vbo)
+void Vao::LinkVbo(Vbo& vbo) const
 {
     vbo.Bind();
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
@@ -31,7 +31,7 @@ void Vao::LinkVbo(Vbo& vbo)
 
     vbo.UnBind();
 }
-void Vao::Delete()
+void Vao::Delete() const
 {
     glDeleteVertexArrays(1, &ID);
 }

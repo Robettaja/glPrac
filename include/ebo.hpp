@@ -1,15 +1,14 @@
 #pragma once
 
-#include <cstddef>
 #include <vector>
 
 class Ebo
 {
   public:
-    unsigned int ID;
-    Ebo(std::vector<unsigned int> indices);
+    unsigned int ID = 0;
+    explicit Ebo(const std::vector<unsigned int>& indices);
     ~Ebo();
-    void Bind();
-    void UnBind();
-    void Delete();
+    void Bind() const;
+    void UnBind() const;
+    void Delete() const;
 };

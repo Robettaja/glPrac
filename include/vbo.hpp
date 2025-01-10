@@ -1,16 +1,17 @@
 #pragma once
 
 #include "vertex.hpp"
+
 #include <vector>
 
 class Vbo
 {
   public:
-    unsigned int ID;
+    unsigned int ID = 0;
 
-    Vbo(std::vector<Vertex> vertices);
+    explicit Vbo(const std::vector<Vertex>& vertices);
     ~Vbo();
-    void Bind();
-    void UnBind();
-    void Delete();
+    void Bind() const;
+    void UnBind() const;
+    void Delete() const;
 };

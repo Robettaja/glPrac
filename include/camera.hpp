@@ -7,12 +7,6 @@
 
 class Camera
 {
-  private:
-    glm::vec3 camForward;
-    bool firstClick;
-    double lastX, lastY;
-    double yaw, pitch;
-
   public:
     glm::vec3 position;
     glm::vec3 orientation;
@@ -20,8 +14,13 @@ class Camera
     float sensitivity, speed;
     glm::mat4 projection;
     glm::mat4 view;
-    Camera(glm::vec3 position, float width, float height);
-    void UpdateAndSendMatricies(Shader& shader, float width, float height);
+    Camera(glm::vec3 position, int width, int height);
+    void UpdateAndSendMatrices(const Shader& shader, int width, int height);
     void MoveCamera(GLFWwindow* window);
     void RotateCamera(GLFWwindow* window);
+
+  private:
+    bool firstClick;
+    double lastX, lastY;
+    double yaw, pitch;
 };

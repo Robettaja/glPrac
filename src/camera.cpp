@@ -6,30 +6,16 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-Camera::Camera(glm::vec3 position, float width, float height)
+Camera::Camera(glm::vec3 position, int width, int height)
+    : position(position), orientation(glm::vec3(0, 0, -1)), camRight(glm::normalize(glm::cross(orientation, camUp))),
+      camUp(glm::vec3(0, 1, 0)), sensitivity(0.15f), speed(0.25f),
+      projection(glm::mat4(1.0f)), view(glm::mat4(1.0f)), firstClick(true), lastX(static_cast<float>(width) / 2), lastY(static_cast<float>(height) / 2), yaw(-90.0f), pitch(0.0f)
 {
-    this->position = position;
-    orientation = glm::vec3(0, 0, -1);
-    camUp = glm::vec3(0, 1, 0);
-    camRight = glm::normalize(glm::cross(orientation, camUp));
-
-    projection = glm::mat4(1.0f);
-    view = glm::mat4(1.0f);
-
-    speed = 0.25f;
-    sensitivity = 0.15f;
-
-    pitch = 0.0f;
-    yaw = -90.0f;
-
-    lastX = width / 2;
-    lastY = height / 2;
-    firstClick = true;
 }
 
-void Camera::UpdateAndSendMatricies(Shader& shader, float width, float height)
+void Camera::UpdateAndSendMatrices(const Shader& shader, const int width, const int height)
 {
-    projection = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
     view = glm::lookAt(position, position + orientation, camUp);
 
     glm::mat4 projectionView = projection * view;
@@ -98,9 +84,9 @@ void Camera::RotateCamera(GLFWwindow* window)
         pitch = -89.0f;
     }
 
-    orientation.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    orientation.y = sin(glm::radians(pitch));
-    orientation.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    orientation.x = static_cast<float>(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+    orientation.y = static_cast<float>(sin(glm::radians(pitch)));
+    orientation.z = static_cast<float>(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
     orientation = glm::normalize(orientation);
     camRight = glm::normalize(glm::cross(orientation, camUp));
 }

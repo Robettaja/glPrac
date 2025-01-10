@@ -13,10 +13,9 @@
 #include <cmath>
 #include <iostream>
 
-Chunk::Chunk(glm::vec3 worldPos)
+Chunk::Chunk(const glm::vec3 worldPos) : chunkPos(worldPos)
 {
     renderer = new Renderer(worldPos);
-    chunkPos = worldPos;
     blocks = new Block**[CHUNK_SIZE];
     for (size_t i = 0; i < CHUNK_SIZE; i++)
     {
@@ -71,11 +70,11 @@ void Chunk::SetBlockTypes()
 void Chunk::CreateMesh()
 {
     int counter = 0;
-    for (size_t x = 0; x < CHUNK_SIZE; x++)
+    for (int x = 0; x < CHUNK_SIZE; x++)
     {
-        for (size_t y = 0; y < CHUNK_SIZE; y++)
+        for (int y = 0; y < CHUNK_SIZE; y++)
         {
-            for (size_t z = 0; z < CHUNK_SIZE; z++)
+            for (int z = 0; z < CHUNK_SIZE; z++)
             {
                 if (!blocks[x][y][z].IsActive())
                     continue;
@@ -88,78 +87,77 @@ void Chunk::CreateMesh()
     renderer->LinkRenderData();
     lastVertexSize = 0;
 }
-void Chunk::CreateBlock(int x, int y, int z, int cubeIndex)
+void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeIndex)
 {
-
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    unsigned int cubeNum = lastVertexSize * cubeIndex;
+    const unsigned int cubeNum = lastVertexSize * cubeIndex;
     if (IsFaceVisible(x, y, z, FaceDirection::Front))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y - 0.5f, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y - 0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x + 0.5, y - 0.5, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y + 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y + 0.5f, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))});
     }
 
     if (IsFaceVisible(x, y, z, FaceDirection::Down))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y - 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, -1, 0))});
+            Vertex{glm::vec3(x + 0.5, y - 0.5, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, -1, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y - 0.5f, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, -1, 0))});
+            Vertex{glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, -1, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y - 0.5f, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, -1, 0))});
+            Vertex{glm::vec3(x - 0.5, y - 0.5, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, -1, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y - 0.5f, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, -1, 0))});
+            Vertex{glm::vec3(x + 0.5, y - 0.5, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, -1, 0))});
     }
     if (IsFaceVisible(x, y, z, FaceDirection::Back))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y - 0.5f, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, -1))});
+            Vertex{glm::vec3(x + 0.5, y - 0.5, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, -1))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y - 0.5f, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, -1))});
+            Vertex{glm::vec3(x - 0.5, y - 0.5, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, -1))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y + 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, -1))});
+            Vertex{glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, -1))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y + 0.5f, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, -1))});
+            Vertex{glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, -1))});
     }
     if (IsFaceVisible(x, y, z, FaceDirection::Up))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y + 0.5f, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y + 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y + 0.5f, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y + 0.5f, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))});
     }
     if (IsFaceVisible(x, y, z, FaceDirection::Left))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y - 0.5f, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(-1, 0, 0))});
+            Vertex{glm::vec3(x - 0.5, y - 0.5, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(-1, 0, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y - 0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(-1, 0, 0))});
+            Vertex{glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(-1, 0, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y + 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(-1, 0, 0))});
+            Vertex{glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(-1, 0, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5f, y + 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(-1, 0, 0))});
+            Vertex{glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(-1, 0, 0))});
     }
     if (IsFaceVisible(x, y, z, FaceDirection::Right))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y - 0.5f, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(1, 0, 0))});
+            Vertex{glm::vec3(x + 0.5, y - 0.5, z + 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(1, 0, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y - 0.5f, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(1, 0, 0))});
+            Vertex{glm::vec3(x + 0.5, y - 0.5, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(1, 0, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y + 0.5f, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(1, 0, 0))});
+            Vertex{glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(1, 0, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5f, y + 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(1, 0, 0))});
+            Vertex{glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(1, 0, 0))});
     }
     lastVertexSize = vertices.size();
 
@@ -178,7 +176,10 @@ void Chunk::CreateBlock(int x, int y, int z, int cubeIndex)
     renderer->AddVertices(vertices);
     renderer->AddIndices(indices);
 }
-bool Chunk::IsFaceVisible(int x, int y, int z, FaceDirection faceDir)
+void Chunk::Update()
+{
+}
+bool Chunk::IsFaceVisible(const int x, const int y, const int z, const FaceDirection faceDir) const
 {
     // return true;
     int nX = x, nY = y, nZ = z;
@@ -215,15 +216,13 @@ bool Chunk::IsFaceVisible(int x, int y, int z, FaceDirection faceDir)
             return true;
         nX--;
         break;
-    default:
-        return false;
     }
 
     // if (faceDir == FaceDirection::Up)
     //     std::cout << x << " " << y << " " << z << " " << !blocks[nX][nY][nZ].IsSolid() << std::endl;
     return !blocks[nX][nY][nZ].IsActive();
 }
-void Chunk::Render(Shader& shader)
+void Chunk::Render(const Shader& shader) const
 {
     renderer->Draw(shader);
 }

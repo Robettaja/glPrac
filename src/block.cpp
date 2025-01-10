@@ -5,25 +5,24 @@
 
 #include <glm/fwd.hpp>
 
-Block::Block()
+Block::Block() : blockType(BlockType::Air)
 {
 }
-Block::~Block()
-{
-}
-bool Block::IsActive()
-{
-    return blockType != Air;
-}
-void Block::SetBlockType(BlockType type)
+Block::~Block() = default;
+
+void Block::SetBlockType(const BlockType type)
 {
     blockType = type;
 }
-BlockType Block::GetBlockType()
+BlockType Block::GetBlockType() const
 {
     return blockType;
 }
-std::string Block::GetBlockData()
+bool Block::IsActive() const
 {
-    return "Block type: " + std::to_string(blockType) + " " + std::to_string(IsActive());
+    return blockType != BlockType::Air;
+}
+std::string Block::GetBlockData() const
+{
+    return "Block type: " + std::to_string(static_cast<int>(blockType)) + " " + std::to_string(IsActive());
 }

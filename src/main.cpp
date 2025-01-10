@@ -3,27 +3,19 @@
 #include "shader.hpp"
 #include "chunk.hpp"
 #include "camera.hpp"
-#include "modelLoader.hpp"
 #include "logger.hpp"
 
-#include <cstddef>
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include <glm/detail/qualifier.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
 #include <glm/fwd.hpp>
-#include <glm/geometric.hpp>
-#include <glm/trigonometric.hpp>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <stb_image.h>
-#include <vector>
 
 int winWidth = 800;
 int winHeight = 600;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow* window, const int width, const int height)
 {
     winWidth = width;
     winHeight = height;
@@ -46,10 +38,10 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Create window for application check if it exist and asing it to the
+    // Create window for application check if it exists and assign it to the
     // software
-    GLFWwindow* window = glfwCreateWindow(winWidth, winHeight, "OpenGL Harjoitus", NULL, NULL);
-    if (window == NULL)
+    GLFWwindow* window = glfwCreateWindow(winWidth, winHeight, "OpenGL Harjoitus", nullptr, nullptr);
+    if (window == nullptr)
     {
         const char* description;
         int error = glfwGetError(&description);
@@ -59,8 +51,8 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
-    // Check if glad was succesfully assigned to program
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    // Check if glad was successfully assigned to program
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         glfwTerminate();
@@ -87,7 +79,7 @@ int main()
         glClearColor(.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        cam.UpdateAndSendMatricies(shader, winWidth, winHeight);
+        cam.UpdateAndSendMatrices(shader, winWidth, winHeight);
         cam.MoveCamera(window);
         chunk.Render(shader);
         // chunk2.Render(shader);

@@ -1,9 +1,10 @@
 #pragma once
+
 #include "renderer.hpp"
 #include "block.hpp"
 #include <glm/fwd.hpp>
 
-enum FaceDirection
+enum class FaceDirection
 {
     Front,
     Down,
@@ -21,18 +22,18 @@ class Chunk
     Renderer* renderer;
     glm::vec3 chunkPos;
     const int maxHeight = 25;
-    int lastVertexSize = 0;
+    size_t lastVertexSize = 0;
 
-    bool IsFaceVisible(int x, int y, int z, FaceDirection faceDir);
+    bool IsFaceVisible(int x, int y, int z, FaceDirection faceDir) const;
 
   public:
-    static const int CHUNK_SIZE = 2;
+    static constexpr int CHUNK_SIZE = 2;
 
-    Chunk(glm::vec3 worldPos);
+    explicit Chunk(glm::vec3 worldPos);
     ~Chunk();
     void SetBlockTypes();
     void CreateMesh();
     void CreateBlock(int x, int y, int z, int cubeIndex);
     void Update();
-    void Render(Shader& shader);
+    void Render(const Shader& shader) const;
 };

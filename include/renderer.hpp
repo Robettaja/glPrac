@@ -4,6 +4,7 @@
 #include "shader.hpp"
 #include "vertex.hpp"
 #include "texture.hpp"
+
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <vector>
@@ -19,13 +20,14 @@ class Renderer
     Vao vao;
 
   public:
-    Renderer(glm::vec3);
-    Renderer(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures,
+    explicit Renderer(glm::vec3);
+    Renderer(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices,
+             const std::vector<Texture>& textures,
              glm::vec3 pos);
     ~Renderer();
     void LinkRenderData();
-    void AddVertices(std::vector<Vertex> vertexData);
-    void AddIndices(std::vector<unsigned int> indicesData);
+    void AddVertices(const std::vector<Vertex>& vertexData);
+    void AddIndices(const std::vector<unsigned int>& indicesData);
     void SetPosition(glm::vec3 pos);
-    void Draw(Shader shader);
+    void Draw(const Shader& shader) const;
 };

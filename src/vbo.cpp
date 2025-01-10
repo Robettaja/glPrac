@@ -3,25 +3,25 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-Vbo::Vbo(std::vector<Vertex> vertices)
+Vbo::Vbo(const std::vector<Vertex>& vertices)
 {
     glGenBuffers(1, &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<long long>(vertices.size() * sizeof(Vertex)), vertices.data(), GL_STATIC_DRAW);
 }
 Vbo::~Vbo()
 {
     Delete();
 }
-void Vbo::Bind()
+void Vbo::Bind() const
 {
     glBindBuffer(GL_ARRAY_BUFFER, ID);
 }
-void Vbo::UnBind()
+void Vbo::UnBind() const
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-void Vbo::Delete()
+void Vbo::Delete() const
 {
     glDeleteBuffers(1, &ID);
 }
