@@ -79,8 +79,6 @@ int main()
     texture.Bind();
     Chunk chunk(glm::vec3(0, 0, -20));
     chunk.CreateMesh();
-    Chunk chunk2(glm::vec3(Chunk::CHUNK_SIZE, 0, -20));
-    chunk2.CreateMesh();
 
     while (!glfwWindowShouldClose(window))
     {

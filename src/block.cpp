@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 
 #include "block.hpp"
+#include <string>
 
 #include <glm/fwd.hpp>
 
@@ -12,9 +13,7 @@ Block::~Block()
 }
 bool Block::IsActive()
 {
-    if (blockType == Air)
-        return false;
-    return true;
+    return blockType != Air;
 }
 void Block::SetBlockType(BlockType type)
 {
@@ -26,7 +25,9 @@ BlockType Block::GetBlockType()
 }
 bool Block::IsSolid()
 {
-    if (blockType == Air || Default)
-        return false;
-    return true;
+    return blockType != Air;
+}
+std::string Block::GetBlockData()
+{
+    return "Block type: " + std::to_string(blockType) + " " + std::to_string(IsSolid());
 }

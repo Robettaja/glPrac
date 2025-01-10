@@ -9,6 +9,7 @@
 #include <glm/gtc/noise.hpp>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 Chunk::Chunk(glm::vec3 worldPos)
 {
@@ -40,6 +41,7 @@ Chunk::~Chunk()
 }
 void Chunk::SetBlockTypes()
 {
+    int counter = 0;
     for (size_t x = 0; x < CHUNK_SIZE; x++)
     {
         for (size_t y = 0; y < CHUNK_SIZE; y++)
@@ -50,8 +52,9 @@ void Chunk::SetBlockTypes()
                 //     std::abs(glm::perlin(glm::vec2(chunkPos.x - x, chunkPos.z - z) * (float)(1.0f / CHUNK_SIZE)));
                 // int heightMap = noiseValue * maxHeight;
                 int heightMap = 0;
-                if (y == 1)
+                if (y == 2)
                 {
+                    counter++;
                     blocks[x][y][z].SetBlockType(BlockType::Grass);
                 }
                 else
@@ -72,7 +75,7 @@ void Chunk::CreateMesh()
         {
             for (size_t z = 0; z < CHUNK_SIZE; z++)
             {
-                if (blocks[x][y][z].IsActive() == false)
+                if (!blocks[x][y][z].IsActive())
                     continue;
 
                 CreateBlock(x, y, z, counter);
@@ -85,6 +88,7 @@ void Chunk::CreateMesh()
 }
 void Chunk::CreateBlock(int x, int y, int z, int cubeIndex)
 {
+
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     unsigned int cubeNum = lastVertexSize * cubeIndex;
@@ -99,6 +103,7 @@ void Chunk::CreateBlock(int x, int y, int z, int cubeIndex)
         vertices.emplace_back(
             Vertex{glm::vec3(x - 0.5f, y + 0.5f, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))});
     }
+
     if (IsFaceVisible(x, y, z, FaceDirection::Down))
     {
         vertices.emplace_back(
@@ -155,48 +160,60 @@ void Chunk::CreateBlock(int x, int y, int z, int cubeIndex)
             Vertex{glm::vec3(x + 0.5f, y + 0.5f, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(1, 0, 0))});
     }
     lastVertexSize = vertices.size();
-
-    for (size_t i = 0; i < vertices.size() / 4; i++)
+    for (size_t i = 0; i < vertices.size(); i += 4)
     {
-        int n = i * 4;
-        indices.emplace_back(0 + cubeNum + n);
-        indices.emplace_back(1 + cubeNum + n);
-        indices.emplace_back(2 + cubeNum + n);
-        indices.emplace_back(2 + cubeNum + n);
-        indices.emplace_back(3 + cubeNum + n);
-        indices.emplace_back(0 + cubeNum + n);
+        indices.emplace_back(0 + cubeNum + i);
+        indices.emplace_back(1 + cubeNum + i);
+        indices.emplace_back(2 + cubeNum + i);
+        indices.emplace_back(2 + cubeNum + i);
+        indices.emplace_back(3 + cubeNum + i);
+        indices.emplace_back(0 + cubeNum + i);
     }
+    // std::cout << x << " " << y << " " << z << " " << blocks[x][y][z].GetBlockData() << std::endl;
     renderer->AddVertices(vertices);
     renderer->AddIndices(indices);
 }
 bool Chunk::IsFaceVisible(int x, int y, int z, FaceDirection faceDir)
 {
-    if (x == 0 || x == CHUNK_SIZE - 1 || z == 0 || z == CHUNK_SIZE - 1)
-        return true;
+    int nX = x, nY = y, nZ = z;
 
     switch (faceDir)
     {
     case FaceDirection::Front:
-        z++;
+        if (nZ >= CHUNK_SIZE - 1)
+            return true;
+        nZ++;
         break;
     case FaceDirection::Down:
-        y--;
+        if (nY <= 0)
+            return true;
+        nY--;
         break;
     case FaceDirection::Back:
-        z--;
+        if (nZ <= 0)
+            return true;
+        nZ--;
         break;
     case FaceDirection::Up:
-        y++;
+        if (nY >= CHUNK_SIZE - 1)
+            return true;
+        nY++;
         break;
     case FaceDirection::Right:
-        x++;
+        if (nX >= CHUNK_SIZE - 1)
+            return true;
+        nX++;
         break;
     case FaceDirection::Left:
-        x--;
+        if (nX <= 0)
+            return true;
+        nX--;
         break;
+    default:
+        return false;
     }
 
-    return !blocks[x][y][z].IsSolid();
+    return !blocks[nX][nY][nZ].IsSolid();
 }
 void Chunk::Render(Shader& shader)
 {
