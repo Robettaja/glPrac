@@ -28,6 +28,10 @@ void Renderer::LinkRenderData()
     ebo.UnBind();
     vbo.UnBind();
 }
+size_t Renderer::GetVerticesSize() const
+{
+    return vertices.size();
+}
 void Renderer::AddVertices(const std::vector<Vertex>& vertexData)
 {
     vertices.insert(vertices.end(), vertexData.begin(), vertexData.end());

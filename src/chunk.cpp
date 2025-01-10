@@ -8,7 +8,6 @@
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
 #include <glm/gtc/noise.hpp>
-#include <string>
 #include <vector>
 #include <cmath>
 #include <iostream>
@@ -17,37 +16,36 @@ Chunk::Chunk(const glm::vec3 worldPos) : chunkPos(worldPos)
 {
     renderer = new Renderer(worldPos);
     blocks = new Block**[CHUNK_SIZE];
-    for (size_t i = 0; i < CHUNK_SIZE; i++)
+    for (size_t x = 0; x < CHUNK_SIZE; x++)
     {
-        blocks[i] = new Block*[CHUNK_SIZE];
-        for (size_t j = 0; j < CHUNK_SIZE; j++)
+        blocks[x] = new Block*[CHUNK_SIZE];
+        for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
-            blocks[i][j] = new Block[CHUNK_SIZE];
+            blocks[x][y] = new Block[CHUNK_SIZE];
         }
     }
     SetBlockTypes();
 }
 Chunk::~Chunk()
 {
-    for (size_t i = 0; i < CHUNK_SIZE; i++)
+    for (size_t x = 0; x < CHUNK_SIZE; x++)
     {
-        for (size_t j = 0; j < CHUNK_SIZE; j++)
+        for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
-            delete[] blocks[i][j];
+            delete[] blocks[x][y];
         }
-        delete[] blocks[i];
+        delete[] blocks[x];
     }
     delete[] blocks;
     delete renderer;
 }
 void Chunk::SetBlockTypes()
 {
-    int counter = 0;
-    for (size_t x = 0; x < CHUNK_SIZE; x++)
+    for (int x = 0; x < CHUNK_SIZE; x++)
     {
-        for (size_t y = 0; y < CHUNK_SIZE; y++)
+        for (int y = 0; y < CHUNK_SIZE; y++)
         {
-            for (size_t z = 0; z < CHUNK_SIZE; z++)
+            for (int z = 0; z < CHUNK_SIZE; z++)
             {
                 // float noiseValue =
                 //     std::abs(glm::perlin(glm::vec2(chunkPos.x - x, chunkPos.z - z) * (float)(1.0f / CHUNK_SIZE)));
@@ -55,12 +53,10 @@ void Chunk::SetBlockTypes()
                 int heightMap = 0;
                 if (y == 0)
                 {
-                    counter++;
                     blocks[x][y][z].SetBlockType(BlockType::Grass);
                 }
                 else
                 {
-
                     blocks[x][y][z].SetBlockType(BlockType::Air);
                 }
             }
@@ -91,7 +87,7 @@ void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeInd
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    const unsigned int cubeNum = lastVertexSize * cubeIndex;
+    const size_t verticeCount = renderer->GetVerticesSize();
     if (IsFaceVisible(x, y, z, FaceDirection::Front))
     {
         vertices.emplace_back(
@@ -129,13 +125,13 @@ void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeInd
     if (IsFaceVisible(x, y, z, FaceDirection::Up))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec2(0, 1), glm::normalize(glm::vec3(0, 1, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec2(1, 1), glm::normalize(glm::vec3(0, 1, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec2(1, 0), glm::normalize(glm::vec3(0, 1, 0))});
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 0, 1))});
+            Vertex{glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec2(0, 0), glm::normalize(glm::vec3(0, 1, 0))});
     }
     if (IsFaceVisible(x, y, z, FaceDirection::Left))
     {
@@ -163,16 +159,13 @@ void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeInd
 
     for (size_t i = 0; i < vertices.size(); i += 4)
     {
-        indices.emplace_back(0 + cubeNum + i);
-        indices.emplace_back(1 + cubeNum + i);
-        indices.emplace_back(2 + cubeNum + i);
-        indices.emplace_back(2 + cubeNum + i);
-        indices.emplace_back(3 + cubeNum + i);
-        indices.emplace_back(0 + cubeNum + i);
+        indices.emplace_back(0 + verticeCount + i);
+        indices.emplace_back(1 + verticeCount + i);
+        indices.emplace_back(2 + verticeCount + i);
+        indices.emplace_back(2 + verticeCount + i);
+        indices.emplace_back(3 + verticeCount + i);
+        indices.emplace_back(0 + verticeCount + i);
     }
-    logger::log_info(std::to_string(vertices.size()));
-    // std::cout << vertices.size() << " " << indices.size() << std::endl;
-    // std::cout << x << " " << y << " " << z << " " << blocks[x][y][z].GetBlockData() << std::endl;
     renderer->AddVertices(vertices);
     renderer->AddIndices(indices);
 }
@@ -181,7 +174,6 @@ void Chunk::Update()
 }
 bool Chunk::IsFaceVisible(const int x, const int y, const int z, const FaceDirection faceDir) const
 {
-    // return true;
     int nX = x, nY = y, nZ = z;
 
     switch (faceDir)
@@ -218,8 +210,6 @@ bool Chunk::IsFaceVisible(const int x, const int y, const int z, const FaceDirec
         break;
     }
 
-    // if (faceDir == FaceDirection::Up)
-    //     std::cout << x << " " << y << " " << z << " " << !blocks[nX][nY][nZ].IsSolid() << std::endl;
     return !blocks[nX][nY][nZ].IsActive();
 }
 void Chunk::Render(const Shader& shader) const

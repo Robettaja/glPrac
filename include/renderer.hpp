@@ -26,6 +26,7 @@ class Renderer
              glm::vec3 pos);
     ~Renderer();
     void LinkRenderData();
+    size_t GetVerticesSize() const;
     void AddVertices(const std::vector<Vertex>& vertexData);
     void AddIndices(const std::vector<unsigned int>& indicesData);
     void SetPosition(glm::vec3 pos);
