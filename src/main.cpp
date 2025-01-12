@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 
+#include "chunkmanager.hpp"
 #include "shader.hpp"
 #include "chunk.hpp"
 #include "camera.hpp"
@@ -71,10 +72,8 @@ int main()
 
     Texture texture("textures/grass.jpg");
     texture.Bind();
-    Chunk chunk(glm::vec3(0, 0, -20));
-    chunk.CreateMesh();
-    Chunk chunk2(glm::vec3(Chunk::CHUNK_SIZE, 0, -20));
-    chunk2.CreateMesh();
+    ChunkManager manager(shader, cam);
+    manager.Load();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -83,8 +82,7 @@ int main()
 
         cam.UpdateAndSendMatrices(shader, winWidth, winHeight);
         cam.MoveCamera(window);
-        chunk.Render(shader);
-        chunk2.Render(shader);
+        manager.Update();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -21,13 +21,13 @@ class Chunk
     Block*** blocks;
     Renderer* renderer;
     glm::vec3 chunkPos;
-    const int maxHeight = 25;
+    const int maxHeight = 8;
     size_t lastVertexSize = 0;
 
     bool IsFaceVisible(int x, int y, int z, FaceDirection faceDir) const;
 
   public:
-    static constexpr int CHUNK_SIZE = 128;
+    static constexpr int CHUNK_SIZE = 16;
 
     explicit Chunk(glm::vec3 worldPos);
     ~Chunk();
