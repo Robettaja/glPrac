@@ -9,8 +9,13 @@ ChunkManager::~ChunkManager()
 {
     Unload();
 }
+void ChunkManager::AsyncLoad()
+{
+    fut = std::async(std::launch::async, &ChunkManager::Load, this);
+}
 void ChunkManager::Load()
 {
+    std::lock_guard<std::mutex> lock(chunksMutex);
     for (size_t i = 0; i < CHUNK_AMOUNT_PER_AXIS; i++)
     {
         for (size_t j = 0; j < CHUNK_AMOUNT_PER_AXIS; j++)
@@ -23,10 +28,6 @@ void ChunkManager::Load()
             Chunk* chunk = new Chunk(pos);
             chunks.emplace_back(chunk);
         }
-    }
-    for (auto& chunk : chunks)
-    {
-        chunk->IsChunkVisible(camera->position, camera->orientation);
     }
 }
 void ChunkManager::Unload()

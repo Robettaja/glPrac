@@ -149,11 +149,16 @@ void Chunk::Update()
 }
 bool Chunk::IsChunkVisible(glm::vec3& cameraPos, glm::vec3& cameraForward) const
 {
-    float distanceToChunk = glm::distance(cameraPos, chunkPos);
-    if (distanceToChunk < 50)
+    glm::vec3 centerChunkPos = chunkPos;
+    centerChunkPos.x += CHUNK_SIZE / 2;
+    centerChunkPos.z += CHUNK_SIZE / 2;
+    float distanceToChunk = glm::distance(cameraPos, centerChunkPos);
+    if (distanceToChunk < Chunk::CHUNK_SIZE)
         return true;
-    float visionThreshold = glm::dot(glm::normalize(chunkPos - cameraPos), cameraForward);
+    if (distanceToChunk > 100)
+        return false;
 
+    float visionThreshold = glm::dot(glm::normalize(centerChunkPos - cameraPos), cameraForward);
     return visionThreshold >= 0.55f;
 }
 bool Chunk::IsFaceVisible(const int x, const int y, const int z, const FaceDirection faceDir) const

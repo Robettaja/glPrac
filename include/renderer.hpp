@@ -20,10 +20,9 @@ class Renderer
     Vao vao;
 
   public:
-    explicit Renderer(glm::vec3);
+    explicit Renderer(const glm::vec3&);
     Renderer(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices,
-             const std::vector<Texture>& textures,
-             glm::vec3 pos);
+             const std::vector<Texture>& textures, glm::vec3 pos);
     ~Renderer();
     void LinkRenderData();
     size_t GetVerticesSize() const;

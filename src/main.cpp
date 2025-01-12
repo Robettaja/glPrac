@@ -1,3 +1,4 @@
+#include <future>
 #include <glad/glad.h>
 
 #include "chunkmanager.hpp"
@@ -21,6 +22,9 @@ void framebuffer_size_callback(GLFWwindow* window, const int width, const int he
     winWidth = width;
     winHeight = height;
     glViewport(0, 0, width, height);
+}
+void test()
+{
 }
 
 int main()
@@ -74,7 +78,6 @@ int main()
     texture.Bind();
     ChunkManager manager(shader, cam);
     manager.Load();
-
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(.2f, 0.3f, 0.3f, 1.0f);

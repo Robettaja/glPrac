@@ -6,9 +6,11 @@
 #include <glm/fwd.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include <iostream>
 
-Renderer::Renderer(const glm::vec3 pos) : model(glm::translate(glm::mat4(1.0f), pos))
+Renderer::Renderer(const glm::vec3& pos) : model(glm::translate(glm::mat4(1.0f), pos))
 {
+    std::cout << "Renderer created" << std::endl;
 }
 Renderer::Renderer(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices,
                    const std::vector<Texture>& textures, const glm::vec3 pos)

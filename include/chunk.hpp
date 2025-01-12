@@ -21,7 +21,7 @@ class Chunk
     Block*** blocks;
     Renderer* renderer;
     glm::vec3 chunkPos;
-    const int maxHeight = 8;
+    const int maxHeight = 4;
     size_t lastVertexSize = 0;
 
     bool IsFaceVisible(int x, int y, int z, FaceDirection faceDir) const;
