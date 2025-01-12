@@ -147,6 +147,15 @@ void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeInd
 void Chunk::Update()
 {
 }
+bool Chunk::IsChunkVisible(glm::vec3& cameraPos, glm::vec3& cameraForward) const
+{
+    float distanceToChunk = glm::distance(cameraPos, chunkPos);
+    if (distanceToChunk < 50)
+        return true;
+    float visionThreshold = glm::dot(glm::normalize(chunkPos - cameraPos), cameraForward);
+
+    return visionThreshold >= 0.55f;
+}
 bool Chunk::IsFaceVisible(const int x, const int y, const int z, const FaceDirection faceDir) const
 {
     int nX = x, nY = y, nZ = z;

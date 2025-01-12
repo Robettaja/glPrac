@@ -35,5 +35,6 @@ class Chunk
     void CreateMesh();
     void CreateBlock(int x, int y, int z, int cubeIndex);
     void Update();
+    bool IsChunkVisible(glm::vec3& cameraPos, glm::vec3& cameraForward) const;
     void Render(const Shader& shader) const;
 };
