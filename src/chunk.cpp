@@ -38,6 +38,7 @@ Chunk::~Chunk()
     }
     delete[] blocks;
     delete renderer;
+    delete mesh;
 }
 void Chunk::SetBlockTypes()
 {
@@ -64,6 +65,7 @@ void Chunk::SetBlockTypes()
 }
 void Chunk::CreateMesh()
 {
+    mesh = new Mesh();
     int counter = 0;
     for (int x = 0; x < CHUNK_SIZE; x++)
     {
@@ -79,14 +81,15 @@ void Chunk::CreateMesh()
             }
         }
     }
-    renderer->LinkRenderData();
+    renderer->AddMesh(*mesh);
+    renderer->LinkGL();
     lastVertexSize = 0;
 }
 void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeIndex)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    const size_t verticeCount = renderer->GetVerticesSize();
+    const size_t verticeCount = mesh->GetVertexAmount();
     if (IsFaceVisible(x, y, z, FaceDirection::Front))
     {
         vertices.emplace_back(Vertex{glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec2(0, 0), (glm::vec3(0, 0, 1))});
@@ -141,8 +144,8 @@ void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeInd
         indices.emplace_back(3 + verticeCount + i);
         indices.emplace_back(0 + verticeCount + i);
     }
-    renderer->AddVertices(vertices);
-    renderer->AddIndices(indices);
+    mesh->AddVertices(vertices);
+    mesh->AddIndices(indices);
 }
 void Chunk::Update()
 {
@@ -153,7 +156,7 @@ bool Chunk::IsChunkVisible(glm::vec3& cameraPos, glm::vec3& cameraForward) const
     centerChunkPos.x += CHUNK_SIZE / 2;
     centerChunkPos.z += CHUNK_SIZE / 2;
     float distanceToChunk = glm::distance(cameraPos, centerChunkPos);
-    if (distanceToChunk < Chunk::CHUNK_SIZE)
+    if (distanceToChunk < Chunk::CHUNK_SIZE * 1.1)
         return true;
     if (distanceToChunk > 100)
         return false;

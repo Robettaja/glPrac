@@ -20,6 +20,7 @@ class Chunk
   private:
     Block*** blocks;
     Renderer* renderer;
+    Mesh* mesh;
     glm::vec3 chunkPos;
     const int maxHeight = 4;
     size_t lastVertexSize = 0;

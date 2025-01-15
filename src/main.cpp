@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 
 #include "chunkmanager.hpp"
+#include "texture.hpp"
 #include "shader.hpp"
 #include "chunk.hpp"
 #include "camera.hpp"
@@ -22,9 +23,6 @@ void framebuffer_size_callback(GLFWwindow* window, const int width, const int he
     winWidth = width;
     winHeight = height;
     glViewport(0, 0, width, height);
-}
-void test()
-{
 }
 
 int main()

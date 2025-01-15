@@ -14,7 +14,7 @@ class ChunkManager
     std::vector<Chunk*> chunks;
     std::mutex chunksMutex;
     std::future<void> fut;
-    const int CHUNK_AMOUNT_PER_AXIS = 16;
+    const int CHUNK_AMOUNT_PER_AXIS = 12;
 
     const bool IsChunkVisible(const glm::vec3& chunkPos);
 
