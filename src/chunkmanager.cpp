@@ -1,5 +1,6 @@
 #include "chunkmanager.hpp"
 #include "chunk.hpp"
+#include <future>
 #include <glm/fwd.hpp>
 
 ChunkManager::ChunkManager(Shader& shader, Camera& camera) : shader(&shader), camera(&camera)
@@ -7,15 +8,20 @@ ChunkManager::ChunkManager(Shader& shader, Camera& camera) : shader(&shader), ca
 }
 ChunkManager::~ChunkManager()
 {
-    Unload();
+    for (auto& chunk : chunks)
+    {
+        delete chunk;
+    }
+    chunks.clear();
 }
 void ChunkManager::AsyncLoad()
 {
+    isDataReady = false;
     fut = std::async(std::launch::async, &ChunkManager::Load, this);
 }
 void ChunkManager::Load()
 {
-    // std::lock_guard<std::mutex> lock(chunksMutex);
+    std::lock_guard<std::mutex> lock(chunksMutex);
     for (size_t i = 0; i < CHUNK_AMOUNT_PER_AXIS; i++)
     {
         for (size_t j = 0; j < CHUNK_AMOUNT_PER_AXIS; j++)
@@ -28,6 +34,13 @@ void ChunkManager::Load()
             Chunk* chunk = new Chunk(pos);
             chunks.emplace_back(chunk);
         }
+    }
+}
+void ChunkManager::LoadGL()
+{
+    for (auto& chunk : chunks)
+    {
+        chunk->LoadGL();
     }
 }
 void ChunkManager::Unload()
@@ -46,11 +59,19 @@ const glm::vec3 ChunkManager::WorldToChunkPos(const glm::vec3& worldPos)
 }
 void ChunkManager::Update()
 {
-    for (auto& chunk : chunks)
+    if (fut.wait_for(std::chrono::seconds(0)) == std::future_status::ready && !isDataReady)
     {
-        if (chunk->IsChunkVisible(camera->position, camera->orientation))
+        LoadGL();
+        isDataReady = true;
+    }
+    if (isDataReady)
+    {
+        for (auto& chunk : chunks)
         {
-            chunk->Render(*shader);
+            if (chunk->IsChunkVisible(camera->position, camera->orientation))
+            {
+                chunk->Render(*shader);
+            }
         }
     }
 }

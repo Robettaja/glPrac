@@ -11,7 +11,7 @@ class Renderer
 {
   private:
     Mesh* mesh;
-    Vao vao;
+    Vao* vao;
 
     glm::mat4 model;
 

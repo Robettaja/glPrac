@@ -9,7 +9,10 @@
 Renderer::Renderer(const glm::vec3& pos) : model(glm::translate(glm::mat4(1.0f), pos))
 {
 }
-Renderer::~Renderer() = default;
+Renderer::~Renderer()
+{
+    delete vao;
+}
 
 void Renderer::SetPosition(const glm::vec3 pos)
 {
@@ -21,18 +24,20 @@ void Renderer::AddMesh(Mesh& mesh)
 }
 void Renderer::LinkGL()
 {
-    vao.Bind();
+    if (vao != nullptr)
+        vao = new Vao();
+    vao->Bind();
     Vbo vbo(mesh->vertices);
     Ebo ebo(mesh->indices);
 
-    vao.LinkVbo(vbo);
-    vao.UnBind();
+    vao->LinkVbo(vbo);
+    vao->UnBind();
     ebo.UnBind();
     vbo.UnBind();
 }
 void Renderer::Draw(const Shader& shader) const
 {
-    vao.Bind();
+    vao->Bind();
     shader.use();
     shader.setMat4("model", model);
     glDrawElements(GL_TRIANGLES, (mesh->GetIndicesAmount()), GL_UNSIGNED_INT, nullptr);

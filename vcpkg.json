@@ -18,8 +18,9 @@
         "opengl3-binding"
       ]
     },
+    "libdeflate",
     "openfbx",
     "stb",
-    "libdeflate"
+    "spdlog"
   ]
 }

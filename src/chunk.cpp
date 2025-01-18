@@ -48,10 +48,9 @@ void Chunk::SetBlockTypes()
         {
             for (int z = 0; z < CHUNK_SIZE; z++)
             {
-                float noiseValue =
-                    std::abs(glm::perlin(glm::vec2(chunkPos.x + x, chunkPos.z + z) * (float)(1.0f / CHUNK_SIZE)));
+                float noiseValue = std::abs(glm::perlin(glm::vec2((chunkPos.x + x) / 64, (chunkPos.z + z) / 64)));
                 int heightMap = noiseValue * maxHeight;
-                if (y == heightMap)
+                if (y <= heightMap)
                 {
                     blocks[x][y][z].SetBlockType(BlockType::Grass);
                 }
@@ -66,7 +65,6 @@ void Chunk::SetBlockTypes()
 void Chunk::CreateMesh()
 {
     mesh = new Mesh();
-    int counter = 0;
     for (int x = 0; x < CHUNK_SIZE; x++)
     {
         for (int y = 0; y < CHUNK_SIZE; y++)
@@ -76,16 +74,14 @@ void Chunk::CreateMesh()
                 if (!blocks[x][y][z].IsActive())
                     continue;
 
-                CreateBlock(x, y, z, counter);
-                counter++;
+                CreateBlock(x, y, z);
             }
         }
     }
     renderer->AddMesh(*mesh);
-    renderer->LinkGL();
     lastVertexSize = 0;
 }
-void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeIndex)
+void Chunk::CreateBlock(const int x, const int y, const int z)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -147,6 +143,10 @@ void Chunk::CreateBlock(const int x, const int y, const int z, const int cubeInd
     mesh->AddVertices(vertices);
     mesh->AddIndices(indices);
 }
+void Chunk::LoadGL()
+{
+    renderer->LinkGL();
+}
 void Chunk::Update()
 {
 }
@@ -162,7 +162,7 @@ bool Chunk::IsChunkVisible(glm::vec3& cameraPos, glm::vec3& cameraForward) const
         return false;
 
     float visionThreshold = glm::dot(glm::normalize(centerChunkPos - cameraPos), cameraForward);
-    return visionThreshold >= 0.55f;
+    return visionThreshold >= 0.25f;
 }
 bool Chunk::IsFaceVisible(const int x, const int y, const int z, const FaceDirection faceDir) const
 {

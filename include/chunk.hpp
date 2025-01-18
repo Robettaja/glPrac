@@ -22,7 +22,7 @@ class Chunk
     Renderer* renderer;
     Mesh* mesh;
     glm::vec3 chunkPos;
-    const int maxHeight = 4;
+    const int maxHeight = 16;
     size_t lastVertexSize = 0;
 
     bool IsFaceVisible(int x, int y, int z, FaceDirection faceDir) const;
@@ -34,7 +34,8 @@ class Chunk
     ~Chunk();
     void SetBlockTypes();
     void CreateMesh();
-    void CreateBlock(int x, int y, int z, int cubeIndex);
+    void CreateBlock(int x, int y, int z);
+    void LoadGL();
     void Update();
     bool IsChunkVisible(glm::vec3& cameraPos, glm::vec3& cameraForward) const;
     void Render(const Shader& shader) const;
