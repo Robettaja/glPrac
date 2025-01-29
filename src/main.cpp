@@ -75,7 +75,7 @@ int main()
     Texture texture("textures/grass.jpg");
     texture.Bind();
     ChunkManager manager(shader, cam);
-    manager.AsyncLoad();
+    manager.CreateChunks();
     // manager.LoadGL();
     while (!glfwWindowShouldClose(window))
     {
