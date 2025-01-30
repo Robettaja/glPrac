@@ -1,8 +1,10 @@
 #pragma once
 
+#include "mesh.hpp"
 #include "renderer.hpp"
 #include "block.hpp"
 #include <glm/fwd.hpp>
+#include <memory>
 
 enum class FaceDirection
 {
@@ -19,8 +21,8 @@ class Chunk
 
   private:
     Block*** blocks;
-    Renderer* renderer;
-    Mesh* mesh;
+    std::shared_ptr<Renderer> renderer;
+    std::shared_ptr<Mesh> mesh;
     glm::vec3 chunkPos;
     const int maxHeight = 16;
     size_t lastVertexSize = 0;
@@ -28,6 +30,8 @@ class Chunk
     bool IsFaceVisible(int x, int y, int z, FaceDirection faceDir) const;
 
   public:
+    bool canLoadGL;
+    bool isReadyToRender;
     static constexpr int CHUNK_SIZE = 16;
 
     explicit Chunk(glm::vec3 worldPos);

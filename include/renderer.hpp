@@ -6,12 +6,13 @@
 
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
+#include <memory>
 
 class Renderer
 {
   private:
     Mesh* mesh;
-    Vao* vao;
+    std::shared_ptr<Vao> vao;
 
     glm::mat4 model;
 

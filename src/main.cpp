@@ -7,6 +7,7 @@
 #include "chunk.hpp"
 #include "camera.hpp"
 #include "logger.hpp"
+#include "timer.hpp"
 
 #include <iostream>
 #include <GLFW/glfw3.h>
@@ -75,8 +76,8 @@ int main()
     Texture texture("textures/grass.jpg");
     texture.Bind();
     ChunkManager manager(shader, cam);
+
     manager.CreateChunks();
-    // manager.LoadGL();
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(.2f, 0.3f, 0.3f, 1.0f);

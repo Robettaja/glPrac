@@ -4,3 +4,4 @@
 4. Skybox.
 5. vähemmän dataa per vertex.
 6. Palikka tyypit.
+7. Greedy mesher

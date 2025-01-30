@@ -5,13 +5,13 @@
 #include <glad/glad.h>
 #include <glm/fwd.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <memory>
 
 Renderer::Renderer(const glm::vec3& pos) : model(glm::translate(glm::mat4(1.0f), pos))
 {
 }
 Renderer::~Renderer()
 {
-    delete vao;
 }
 
 void Renderer::SetPosition(const glm::vec3 pos)
@@ -24,8 +24,7 @@ void Renderer::AddMesh(Mesh& mesh)
 }
 void Renderer::LinkGL()
 {
-    if (vao != nullptr)
-        vao = new Vao();
+    vao = std::make_shared<Vao>();
     vao->Bind();
     Vbo vbo(mesh->vertices);
     Ebo ebo(mesh->indices);

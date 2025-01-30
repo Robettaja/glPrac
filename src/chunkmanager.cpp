@@ -2,9 +2,11 @@
 #include "chunkmanager.hpp"
 #include "chunk.hpp"
 #include <algorithm>
+#include <cstddef>
 #include <execution>
 #include <future>
 #include <glm/fwd.hpp>
+#include <glm/geometric.hpp>
 #include <memory>
 #include <thread>
 #include <iostream>
@@ -20,9 +22,9 @@ ChunkManager::~ChunkManager()
 }
 void ChunkManager::CreateChunks()
 {
-    fut = std::async(&ChunkManager::AsyncLoad, this);
+    fut = std::async(&ChunkManager::CreateThreads, this);
 }
-void ChunkManager::AsyncLoad()
+void ChunkManager::CreateThreads()
 {
     threads.clear();
     for (int i = 0; i < THREAD_AMOUNT; i++)
@@ -36,9 +38,11 @@ void ChunkManager::AsyncLoad()
 }
 void ChunkManager::Load(int threadNum)
 {
-    chunksReadyCount = 0;
+    size_t chunksPerThread = CHUNK_AMOUNT_PER_AXIS / THREAD_AMOUNT;
+    size_t startChunk = threadNum * chunksPerThread;
+    size_t endChunk = startChunk + chunksPerThread;
     std::lock_guard<std::mutex> lock(chunksMutex);
-    for (size_t i = threadNum * THREAD_AMOUNT; i < CHUNK_AMOUNT_PER_AXIS / THREAD_AMOUNT * (threadNum + 1); i++)
+    for (size_t i = startChunk; i < endChunk; i++)
     {
         for (size_t j = 0; j < CHUNK_AMOUNT_PER_AXIS; j++)
         {
@@ -49,8 +53,8 @@ void ChunkManager::Load(int threadNum)
             glm::vec3 pos = glm::vec3(posOff.x + i * Chunk::CHUNK_SIZE, 0, posOff.z + j * Chunk::CHUNK_SIZE);
             lastGenPos = pos;
             std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(pos);
+            chunk->canLoadGL = true;
             chunks.emplace_back(chunk);
-            chunksReadyCount++;
         }
     }
     std::cout << "Thread " << threadNum << " finished" << std::endl;
@@ -59,7 +63,11 @@ void ChunkManager::LoadGL()
 {
     for (auto& chunk : chunks)
     {
-        chunk->LoadGL();
+        if (chunk->canLoadGL)
+        {
+            chunk->LoadGL();
+            chunk->canLoadGL = false;
+        }
     }
 }
 void ChunkManager::Unload()
@@ -74,23 +82,17 @@ const glm::vec3 ChunkManager::WorldToChunkPos(const glm::vec3& worldPos)
 }
 void ChunkManager::Update()
 {
-    if (fut.wait_for(std::chrono::seconds(0)) == std::future_status::ready && !isDataReady)
+    if (glm::distance(camera->position, lastGenPos) > 50)
     {
-        isDataReady = true;
-        LoadGL();
+        // CreateChunks();
     }
-    // if (glm::distance(camera->position, lastGenPos) > 200)
-    // {
-    //     AsyncLoad();
-    // }
-    if (isDataReady)
+    LoadGL();
+    for (auto& chunk : chunks)
     {
-        for (auto& chunk : chunks)
-        {
+        if (chunk->isReadyToRender)
             if (chunk->IsChunkVisible(camera->position, camera->orientation))
             {
                 chunk->Render(*shader);
             }
-        }
     }
 }

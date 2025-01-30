@@ -13,7 +13,8 @@
 #include <iostream>
 Chunk::Chunk(const glm::vec3 worldPos) : chunkPos(worldPos)
 {
-    renderer = new Renderer(worldPos);
+    // renderer = new Renderer(worldPos);
+    renderer = std::make_shared<Renderer>(worldPos);
     blocks = new Block**[CHUNK_SIZE];
     for (size_t x = 0; x < CHUNK_SIZE; x++)
     {
@@ -37,8 +38,6 @@ Chunk::~Chunk()
         delete[] blocks[x];
     }
     delete[] blocks;
-    delete renderer;
-    delete mesh;
 }
 void Chunk::SetBlockTypes()
 {
@@ -64,7 +63,7 @@ void Chunk::SetBlockTypes()
 }
 void Chunk::CreateMesh()
 {
-    mesh = new Mesh();
+    mesh = std::make_shared<Mesh>();
     for (int x = 0; x < CHUNK_SIZE; x++)
     {
         for (int y = 0; y < CHUNK_SIZE; y++)
@@ -146,6 +145,7 @@ void Chunk::CreateBlock(const int x, const int y, const int z)
 void Chunk::LoadGL()
 {
     renderer->LinkGL();
+    isReadyToRender = true;
 }
 void Chunk::Update()
 {
