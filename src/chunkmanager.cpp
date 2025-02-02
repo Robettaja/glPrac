@@ -1,24 +1,36 @@
 #include "timer.hpp"
 #include "chunkmanager.hpp"
 #include "chunk.hpp"
-#include <algorithm>
 #include <cstddef>
-#include <execution>
 #include <future>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
 #include <memory>
 #include <thread>
+#include <random>
 #include <iostream>
 
 Timer timer("Chunk creation timer");
 
+int ChunkManager::seed;
 ChunkManager::ChunkManager(Shader& shader, Camera& camera) : shader(&shader), camera(&camera)
 {
+    seed = GenerateSeed();
+    std::cout << "Seed: " << seed << std::endl;
 }
 ChunkManager::~ChunkManager()
 {
     chunks.clear();
+}
+int ChunkManager::GenerateSeed()
+{
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 generator(seed);
+
+    std::uniform_int_distribution<int> distribution(100000000, 999999999);
+
+    unsigned int randomNumber = distribution(generator);
+    return randomNumber;
 }
 void ChunkManager::CreateChunks()
 {
@@ -57,7 +69,13 @@ void ChunkManager::Load(int threadNum)
             chunks.emplace_back(chunk);
         }
     }
-    std::cout << "Thread " << threadNum << " finished" << std::endl;
+}
+void ChunkManager::LoadChunk(const glm::vec3& chunkPos)
+{
+    std::lock_guard<std::mutex> lock(chunksMutex);
+    std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(chunkPos);
+    chunk->canLoadGL = true;
+    chunks.emplace_back(chunk);
 }
 void ChunkManager::LoadGL()
 {
@@ -84,7 +102,6 @@ void ChunkManager::Update()
 {
     if (glm::distance(camera->position, lastGenPos) > 50)
     {
-        // CreateChunks();
     }
     LoadGL();
     for (auto& chunk : chunks)

@@ -1,6 +1,6 @@
-#include "timer.hpp"
 #include "chunk.hpp"
 #include "block.hpp"
+#include "chunkmanager.hpp"
 #include "renderer.hpp"
 #include "shader.hpp"
 #include "vertex.hpp"
@@ -13,7 +13,6 @@
 #include <iostream>
 Chunk::Chunk(const glm::vec3 worldPos) : chunkPos(worldPos)
 {
-    // renderer = new Renderer(worldPos);
     renderer = std::make_shared<Renderer>(worldPos);
     blocks = new Block**[CHUNK_SIZE];
     for (size_t x = 0; x < CHUNK_SIZE; x++)
@@ -47,7 +46,10 @@ void Chunk::SetBlockTypes()
         {
             for (int z = 0; z < CHUNK_SIZE; z++)
             {
-                float noiseValue = std::abs(glm::perlin(glm::vec2((chunkPos.x + x) / 64, (chunkPos.z + z) / 64)));
+                float xPos = (chunkPos.x + x) / 64;
+                float yPos = (chunkPos.z + z) / 64;
+                // glm::detail::perlin test(ChunkManager::seed);
+                float noiseValue = std::abs(glm::perlin(glm::vec2(xPos, yPos)));
                 int heightMap = noiseValue * maxHeight;
                 if (y <= heightMap)
                 {

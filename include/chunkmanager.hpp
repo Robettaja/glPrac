@@ -26,13 +26,16 @@ class ChunkManager
 
     const bool IsChunkVisible(const glm::vec3& chunkPos);
     void CreateThreads();
+    int GenerateSeed();
 
   public:
+    static int seed;
     ChunkManager(Shader& shader, Camera& camera);
     ~ChunkManager();
     void Update();
     void CreateChunks();
     void Load(int threadNum);
+    void LoadChunk(const glm::vec3& chunkPos);
     void LoadGL();
     void Unload();
     static const glm::vec3 WorldToChunkPos(const glm::vec3& worldPos);

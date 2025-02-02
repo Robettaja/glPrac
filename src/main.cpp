@@ -7,7 +7,7 @@
 #include "chunk.hpp"
 #include "camera.hpp"
 #include "logger.hpp"
-#include "timer.hpp"
+#include "time.hpp"
 
 #include <iostream>
 #include <GLFW/glfw3.h>
@@ -80,6 +80,7 @@ int main()
     manager.CreateChunks();
     while (!glfwWindowShouldClose(window))
     {
+        Time::UpdateTime();
         glClearColor(.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

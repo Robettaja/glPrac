@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include "time.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/fwd.hpp>
@@ -8,14 +9,16 @@
 
 Camera::Camera(glm::vec3 position, int width, int height)
     : position(position), orientation(glm::vec3(0, 0, -1)), camRight(glm::normalize(glm::cross(orientation, camUp))),
-      camUp(glm::vec3(0, 1, 0)), sensitivity(0.15f), speed(0.25f),
-      projection(glm::mat4(1.0f)), view(glm::mat4(1.0f)), firstClick(true), lastX(static_cast<float>(width) / 2), lastY(static_cast<float>(height) / 2), yaw(-90.0f), pitch(0.0f)
+      camUp(glm::vec3(0, 1, 0)), sensitivity(2.5f), speed(60.0f), projection(glm::mat4(1.0f)), view(glm::mat4(1.0f)),
+      firstClick(true), lastX(static_cast<float>(width) / 2), lastY(static_cast<float>(height) / 2), yaw(-90.0f),
+      pitch(0.0f)
 {
 }
 
 void Camera::UpdateAndSendMatrices(const Shader& shader, const int width, const int height)
 {
-    projection = glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+    projection =
+        glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
     view = glm::lookAt(position, position + orientation, camUp);
 
     glm::mat4 projectionView = projection * view;
@@ -34,19 +37,19 @@ void Camera::MoveCamera(GLFWwindow* window)
         }
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
-            position += orientation * speed;
+            position += orientation * speed * Time::deltaTime;
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         {
-            position -= orientation * speed;
+            position -= orientation * speed * Time::deltaTime;
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         {
-            position += camRight * speed;
+            position += camRight * speed * Time::deltaTime;
         }
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         {
-            position -= camRight * speed;
+            position -= camRight * speed * Time::deltaTime;
         }
         RotateCamera(window);
     }
@@ -69,8 +72,8 @@ void Camera::RotateCamera(GLFWwindow* window)
     lastX = mouseX;
     lastY = mouseY;
 
-    deltaX = deltaX * sensitivity;
-    deltaY = deltaY * sensitivity;
+    deltaX = deltaX * sensitivity * Time::deltaTime;
+    deltaY = deltaY * sensitivity * Time::deltaTime;
 
     yaw += deltaX;
     pitch += deltaY;
