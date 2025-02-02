@@ -23,13 +23,13 @@ class Chunk
     Block*** blocks;
     std::shared_ptr<Renderer> renderer;
     std::shared_ptr<Mesh> mesh;
-    glm::vec3 chunkPos;
     const int maxHeight = 32;
     size_t lastVertexSize = 0;
 
     bool IsFaceVisible(int x, int y, int z, FaceDirection faceDir) const;
 
   public:
+    glm::vec3 chunkPos;
     bool canLoadGL = false;
     bool isReadyToRender;
     static constexpr int CHUNK_SIZE = 16;

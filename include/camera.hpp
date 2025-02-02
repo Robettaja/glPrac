@@ -15,7 +15,7 @@ class Camera
     glm::mat4 projection;
     glm::mat4 view;
     Camera(glm::vec3 position, int width, int height);
-    void UpdateAndSendMatrices(const Shader& shader, int width, int height);
+    void UpdateMatrices(const Shader& shader, int width, int height);
     void MoveCamera(GLFWwindow* window);
     void RotateCamera(GLFWwindow* window);
 

@@ -84,7 +84,7 @@ int main()
         glClearColor(.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        cam.UpdateAndSendMatrices(shader, winWidth, winHeight);
+        cam.UpdateMatrices(shader, winWidth, winHeight);
         cam.MoveCamera(window);
         manager.Update();
 

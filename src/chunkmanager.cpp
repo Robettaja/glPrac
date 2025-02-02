@@ -9,6 +9,7 @@
 #include <thread>
 #include <random>
 #include <iostream>
+#include <ranges>
 
 Timer timer("Chunk creation timer");
 
@@ -66,20 +67,23 @@ void ChunkManager::Load(int threadNum)
             lastGenPos = pos;
             std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(pos);
             chunk->canLoadGL = true;
-            chunks.emplace_back(chunk);
+            chunks[pos] = chunk;
         }
     }
 }
 void ChunkManager::LoadChunk(const glm::vec3& chunkPos)
 {
-    std::lock_guard<std::mutex> lock(chunksMutex);
     std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(chunkPos);
     chunk->canLoadGL = true;
-    chunks.emplace_back(chunk);
+    chunks[chunkPos] = chunk;
+}
+void ChunkManager::UnloadChunk(const glm::vec3& chunkPos)
+{
+    chunks.erase(chunkPos);
 }
 void ChunkManager::LoadGL()
 {
-    for (auto& chunk : chunks)
+    for (auto& chunk : std::views::values(chunks))
     {
         if (chunk->canLoadGL)
         {
@@ -92,7 +96,7 @@ void ChunkManager::Unload()
 {
     chunks.clear();
 }
-const glm::vec3 ChunkManager::WorldToChunkPos(const glm::vec3& worldPos)
+glm::vec3 ChunkManager::WorldToChunkPos(const glm::vec3& worldPos)
 {
     return glm::vec3(std::floor(worldPos.x / Chunk::CHUNK_SIZE) * Chunk::CHUNK_SIZE,
                      std::floor(worldPos.y / Chunk::CHUNK_SIZE) * Chunk::CHUNK_SIZE,
@@ -100,16 +104,20 @@ const glm::vec3 ChunkManager::WorldToChunkPos(const glm::vec3& worldPos)
 }
 void ChunkManager::Update()
 {
-    if (glm::distance(camera->position, lastGenPos) > 50)
-    {
-    }
+
     LoadGL();
-    for (auto& chunk : chunks)
+    for (auto& chunk : std::views::values(chunks))
     {
         if (chunk->isReadyToRender)
+        {
             if (chunk->IsChunkVisible(camera->position, camera->orientation))
             {
                 chunk->Render(*shader);
             }
+        }
+        if (glm::distance(chunk->chunkPos, camera->position) > 100)
+        {
+            // UnloadChunk(chunk.second->chunkPos);
+        }
     }
 }

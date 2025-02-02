@@ -12,7 +12,7 @@ class Renderer
 {
   private:
     Mesh* mesh;
-    std::shared_ptr<Vao> vao;
+    Vao* vao;
 
     glm::mat4 model;
 
