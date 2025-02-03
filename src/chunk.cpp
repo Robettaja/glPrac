@@ -5,9 +5,11 @@
 #include "shader.hpp"
 #include "vertex.hpp"
 #include <cstdlib>
+#include <glm/common.hpp>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
 #include <glm/gtc/noise.hpp>
+#include <vendor/FastNoiseLite.h>
 #include <vector>
 #include <cmath>
 #include <iostream>
@@ -46,10 +48,12 @@ void Chunk::SetBlockTypes()
         {
             for (int z = 0; z < CHUNK_SIZE; z++)
             {
-                float xPos = (chunkPos.x + x) / 64;
-                float yPos = (chunkPos.z + z) / 64;
-                // glm::detail::perlin test(ChunkManager::seed);
-                float noiseValue = std::abs(glm::perlin(glm::vec2(xPos, yPos)));
+                float xPos = (chunkPos.x + x) / 1;
+                float yPos = (chunkPos.z + z) / 1;
+                FastNoiseLite noise;
+                noise.SetSeed(ChunkManager::seed);
+                noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+                float noiseValue = glm::abs(noise.GetNoise(xPos, yPos));
                 int heightMap = noiseValue * maxHeight;
                 if (y <= heightMap)
                 {
