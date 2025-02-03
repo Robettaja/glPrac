@@ -24,6 +24,10 @@ ChunkManager::~ChunkManager()
     fut.join();
     chunks.clear();
 }
+bool ChunkManager::HasCurrentChunkChanged()
+{
+    return WorldToChunkPos(camera->position) != WorldToChunkPos(lastChunkPos);
+}
 int ChunkManager::GenerateSeed()
 {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -33,6 +37,47 @@ int ChunkManager::GenerateSeed()
 
     unsigned int randomNumber = distribution(generator);
     return randomNumber;
+}
+BoundingBox ChunkManager::GetChunkBoundingBox()
+{
+    int minX = INT_MAX;
+    int minY = INT_MAX;
+    int minZ = INT_MAX;
+    int maxX = INT_MIN;
+    int maxY = INT_MIN;
+    int maxZ = INT_MIN;
+    for (auto& chunkPos : currentChunksPos)
+    {
+        if (minX > chunkPos.x)
+            minX = chunkPos.x;
+        if (minY > chunkPos.y)
+            minY = chunkPos.y;
+        if (minZ > chunkPos.z)
+            minZ = chunkPos.z;
+        if (maxX < chunkPos.x)
+            maxX = chunkPos.x;
+        if (maxY < chunkPos.y)
+            maxY = chunkPos.y;
+        if (maxZ < chunkPos.z)
+            maxZ = chunkPos.z;
+    }
+    return BoundingBox{glm::vec3(minX, minY, minZ), glm::vec3(maxX, maxY, maxZ)};
+}
+void ChunkManager::RemoveChunkPositions()
+{
+    std::vector<int> indexes;
+    for (int i = 0; i < currentChunksPos.size(); i++)
+    {
+        // Add indexes to remove if key is not in the map.
+        if (chunks.find(currentChunksPos[i]) == chunks.end())
+        {
+            indexes.emplace_back(i);
+        }
+    }
+    for (int i = indexes.size() - 1; i > 0; i--)
+    {
+        currentChunksPos.erase(currentChunksPos.begin() + indexes[i]);
+    }
 }
 void ChunkManager::CreateChunks()
 {
@@ -65,9 +110,9 @@ void ChunkManager::Load(int threadNum)
                                            camera->position.z - CHUNK_AMOUNT_PER_AXIS * Chunk::CHUNK_SIZE / 2);
             glm::vec3 posOff = WorldToChunkPos(startPos);
             glm::vec3 pos = glm::vec3(posOff.x + i * Chunk::CHUNK_SIZE, 0, posOff.z + j * Chunk::CHUNK_SIZE);
-            lastGenPos = pos;
             std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(pos);
             chunk->canLoadGL = true;
+            currentChunksPos.emplace_back(pos);
             chunks[pos] = chunk;
         }
     }
@@ -116,9 +161,19 @@ void ChunkManager::Update()
                 chunk->Render(*shader);
             }
         }
-        if (glm::distance(chunk->chunkPos, camera->position) > 100)
-        {
-            // UnloadChunk(chunk.second->chunkPos);
-        }
     }
+    if (HasCurrentChunkChanged())
+    {
+        // Chunk unloading
+        for (auto& chunkPos : currentChunksPos)
+        {
+            if (glm::distance(camera->position, chunkPos) > CHUNK_AMOUNT_PER_AXIS * Chunk::CHUNK_SIZE)
+            {
+                UnloadChunk(chunkPos);
+            }
+        }
+        RemoveChunkPositions();
+        // Chunk loading
+    }
+    lastChunkPos = camera->position;
 }

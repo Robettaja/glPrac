@@ -11,6 +11,9 @@
 
 #include <iostream>
 #include <GLFW/glfw3.h>
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include <glm/detail/qualifier.hpp>
 #include <glm/fwd.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,6 +21,39 @@
 
 int winWidth = 800;
 int winHeight = 600;
+void init_imgui(GLFWwindow* window)
+{
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 410");
+}
+
+void shutdown_imgui()
+{
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
+void update_imgui()
+{
+    // Begin Imgui Render
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // Imgui Widget Code Here
+    ImGui::Text("FPS: %d", (int)(1.0f / Time::deltaTime));
+
+    // Finish Imgui Render
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2((float)winWidth, (float)winHeight);
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 
 void framebuffer_size_callback(GLFWwindow* window, const int width, const int height)
 {
@@ -25,7 +61,6 @@ void framebuffer_size_callback(GLFWwindow* window, const int width, const int he
     winHeight = height;
     glViewport(0, 0, width, height);
 }
-
 int main()
 {
     // We initialize glfw so we can use it
@@ -62,6 +97,8 @@ int main()
         glfwTerminate();
         return -1;
     }
+    init_imgui(window);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -87,10 +124,12 @@ int main()
         cam.UpdateMatrices(shader, winWidth, winHeight);
         cam.MoveCamera(window);
         manager.Update();
+        update_imgui();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    shutdown_imgui();
     glfwTerminate();
     return 0;
 }

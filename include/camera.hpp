@@ -8,6 +8,7 @@
 class Camera
 {
   public:
+    float viewDistance;
     glm::vec3 position;
     glm::vec3 orientation;
     glm::vec3 camRight, camUp;

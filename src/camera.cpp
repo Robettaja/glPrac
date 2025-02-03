@@ -8,17 +8,17 @@
 #include <iostream>
 
 Camera::Camera(glm::vec3 position, int width, int height)
-    : position(position), orientation(glm::vec3(0, 0, -1)), camRight(glm::normalize(glm::cross(orientation, camUp))),
-      camUp(glm::vec3(0, 1, 0)), sensitivity(0.08f), speed(60.0f), projection(glm::mat4(1.0f)), view(glm::mat4(1.0f)),
-      firstClick(true), lastX(static_cast<float>(width) / 2), lastY(static_cast<float>(height) / 2), yaw(-90.0f),
-      pitch(0.0f)
+    : viewDistance(100), position(position), orientation(glm::vec3(0, 0, -1)),
+      camRight(glm::normalize(glm::cross(orientation, camUp))), camUp(glm::vec3(0, 1, 0)), sensitivity(0.08f),
+      speed(60.0f), projection(glm::mat4(1.0f)), view(glm::mat4(1.0f)), firstClick(true),
+      lastX(static_cast<float>(width) / 2), lastY(static_cast<float>(height) / 2), yaw(-90.0f), pitch(0.0f)
 {
 }
 
 void Camera::UpdateMatrices(const Shader& shader, const int width, const int height)
 {
-    projection =
-        glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f,
+                                  viewDistance);
     view = glm::lookAt(position, position + orientation, camUp);
 
     glm::mat4 projectionView = projection * view;
