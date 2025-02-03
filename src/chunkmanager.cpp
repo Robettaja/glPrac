@@ -21,6 +21,7 @@ ChunkManager::ChunkManager(Shader& shader, Camera& camera) : shader(&shader), ca
 }
 ChunkManager::~ChunkManager()
 {
+    fut.join();
     chunks.clear();
 }
 int ChunkManager::GenerateSeed()
@@ -35,7 +36,7 @@ int ChunkManager::GenerateSeed()
 }
 void ChunkManager::CreateChunks()
 {
-    fut = std::async(&ChunkManager::CreateThreads, this);
+    fut = std::thread(&ChunkManager::CreateThreads, this);
 }
 void ChunkManager::CreateThreads()
 {

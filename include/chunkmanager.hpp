@@ -31,8 +31,8 @@ class ChunkManager
     bool isDataReady = false;
     std::vector<std::thread> threads;
     std::mutex chunksMutex;
-    std::future<void> fut;
-    const int THREAD_AMOUNT = 5;
+    std::thread fut;
+    const int THREAD_AMOUNT = 8;
     const int CHUNK_AMOUNT_PER_AXIS = 16;
 
     const bool IsChunkVisible(const glm::vec3& chunkPos);
