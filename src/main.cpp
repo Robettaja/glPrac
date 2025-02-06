@@ -21,6 +21,8 @@
 
 int winWidth = 800;
 int winHeight = 600;
+float updateTimer = 0.0f;
+float fps = 0.0f;
 void init_imgui(GLFWwindow* window)
 {
     IMGUI_CHECKVERSION();
@@ -45,7 +47,9 @@ void update_imgui()
     ImGui::NewFrame();
 
     // Imgui Widget Code Here
-    ImGui::Text("FPS: %d", (int)(1.0f / Time::deltaTime));
+    {
+        ImGui::Text("FPS: %d", (int)fps);
+    }
 
     // Finish Imgui Render
     ImGuiIO& io = ImGui::GetIO();
@@ -115,6 +119,7 @@ int main()
     ChunkManager manager(shader, cam);
 
     manager.CreateChunks();
+    float timer = 0;
     while (!glfwWindowShouldClose(window))
     {
         Time::UpdateTime();
@@ -125,6 +130,12 @@ int main()
         cam.MoveCamera(window);
         manager.Update();
         update_imgui();
+        if (updateTimer >= 0.15f)
+        {
+            fps = 1.0f / Time::deltaTime;
+            updateTimer = 0;
+        }
+        updateTimer += Time::deltaTime;
 
         glfwSwapBuffers(window);
         glfwPollEvents();

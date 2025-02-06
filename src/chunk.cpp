@@ -6,8 +6,10 @@
 #include "vertex.hpp"
 #include <cstdlib>
 #include <glm/common.hpp>
+#include <glm/exponential.hpp>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
+#include <glm/gtc/constants.hpp>
 #include <glm/gtc/noise.hpp>
 #include <vendor/FastNoiseLite.h>
 #include <vector>
@@ -53,8 +55,10 @@ void Chunk::SetBlockTypes()
                 FastNoiseLite noise;
                 noise.SetSeed(ChunkManager::seed);
                 noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+                noise.SetFractalOctaves(4);
                 float noiseValue = glm::abs(noise.GetNoise(xPos, yPos));
                 int heightMap = noiseValue * maxHeight;
+
                 if (y <= heightMap)
                 {
                     blocks[x][y][z].SetBlockType(BlockType::Grass);
