@@ -21,7 +21,7 @@ ChunkManager::ChunkManager(Shader& shader, Camera& camera) : shader(&shader), ca
 }
 ChunkManager::~ChunkManager()
 {
-    fut.join();
+    // fut.join();
     chunks.clear();
 }
 bool ChunkManager::HasCurrentChunkChanged()
@@ -81,7 +81,8 @@ void ChunkManager::RemoveChunkPositions()
 }
 void ChunkManager::CreateChunks()
 {
-    fut = std::thread(&ChunkManager::CreateThreads, this);
+    isGenerating = true;
+    fut = std::async(&ChunkManager::CreateThreads, this);
 }
 void ChunkManager::CreateThreads()
 {
@@ -94,9 +95,11 @@ void ChunkManager::CreateThreads()
     {
         thread.join();
     }
+    isGenerating = false;
 }
 void ChunkManager::Load(int threadNum)
 {
+    lastGenPos = camera->position;
     size_t chunksPerThread = CHUNK_AMOUNT_PER_AXIS / THREAD_AMOUNT;
     size_t startChunk = threadNum * chunksPerThread;
     size_t endChunk = startChunk + chunksPerThread;
@@ -110,17 +113,21 @@ void ChunkManager::Load(int threadNum)
                                            camera->position.z - CHUNK_AMOUNT_PER_AXIS * Chunk::CHUNK_SIZE / 2);
             glm::vec3 posOff = WorldToChunkPos(startPos);
             glm::vec3 pos = glm::vec3(posOff.x + i * Chunk::CHUNK_SIZE, 0, posOff.z + j * Chunk::CHUNK_SIZE);
-            std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(pos);
-            chunk->canLoadGL = true;
-            currentChunksPos.emplace_back(pos);
-            chunks[pos] = chunk;
+            if (chunks.find(pos) == chunks.end())
+            {
+                LoadChunk(pos);
+            }
         }
     }
+}
+void ChunkManager::CreateNewChunks()
+{
 }
 void ChunkManager::LoadChunk(const glm::vec3& chunkPos)
 {
     std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(chunkPos);
     chunk->canLoadGL = true;
+    currentChunksPos.emplace_back(chunkPos);
     chunks[chunkPos] = chunk;
 }
 void ChunkManager::UnloadChunk(const glm::vec3& chunkPos)
@@ -174,6 +181,12 @@ void ChunkManager::Update()
         }
         RemoveChunkPositions();
         // Chunk loading
+        glm::vec3 startPos = WorldToChunkPos(lastGenPos);
+        glm::vec3 currentPos = WorldToChunkPos(camera->position);
+        if (glm::distance(startPos, currentPos) > 16 && !isGenerating)
+        {
+            CreateChunks();
+        }
     }
     lastChunkPos = camera->position;
 }

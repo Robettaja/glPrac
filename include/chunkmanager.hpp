@@ -32,12 +32,14 @@ class ChunkManager
     Shader* shader;
     Camera* camera;
     glm::vec3 lastChunkPos;
+    glm::vec3 lastGenPos;
     std::unordered_map<glm::vec3, std::shared_ptr<Chunk>, Vec3Hash> chunks;
     std::vector<glm::vec3> currentChunksPos;
     bool isDataReady = false;
+    bool isGenerating = false;
     std::vector<std::thread> threads;
     std::mutex chunksMutex;
-    std::thread fut;
+    std::future<void> fut;
     const int THREAD_AMOUNT = 8;
     const int CHUNK_AMOUNT_PER_AXIS = 24;
 
@@ -54,6 +56,7 @@ class ChunkManager
     ~ChunkManager();
     void Update();
     void CreateChunks();
+    void CreateNewChunks();
     void Load(int threadNum);
     void LoadChunk(const glm::vec3& chunkPos);
     void UnloadChunk(const glm::vec3& chunkPos);
