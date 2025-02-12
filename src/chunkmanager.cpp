@@ -74,7 +74,7 @@ void ChunkManager::RemoveChunkPositions()
             indexes.emplace_back(i);
         }
     }
-    for (int i = indexes.size() - 1; i > 0; i--)
+    for (int i = indexes.size() - 1; i >= 0; i--)
     {
         currentChunksPos.erase(currentChunksPos.begin() + indexes[i]);
     }
@@ -138,6 +138,9 @@ void ChunkManager::LoadGL()
 {
     for (auto& chunk : std::views::values(chunks))
     {
+        if (!chunk)
+            continue;
+
         if (chunk->canLoadGL)
         {
             chunk->LoadGL();
@@ -161,6 +164,9 @@ void ChunkManager::Update()
     LoadGL();
     for (auto& chunk : std::views::values(chunks))
     {
+        if (!chunk)
+            continue;
+
         if (chunk->isReadyToRender)
         {
             if (chunk->IsChunkVisible(camera->position, camera->orientation))
