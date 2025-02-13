@@ -21,7 +21,7 @@ void Renderer::SetPosition(const glm::vec3 pos)
 {
     model = glm::translate(glm::mat4(1.0f), pos);
 }
-void Renderer::AddMesh(Mesh& mesh)
+void Renderer::SetMesh(Mesh& mesh)
 {
     this->mesh = &mesh;
 }

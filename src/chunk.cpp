@@ -50,22 +50,18 @@ void Chunk::SetBlockTypes()
         {
             for (int z = 0; z < CHUNK_SIZE; z++)
             {
-                float xPos = (chunkPos.x + x) / 1;
-                float yPos = (chunkPos.z + z) / 1;
+                float xPos = (chunkPos.x + x);
+                float yPos = (chunkPos.z + z);
                 FastNoiseLite noise;
                 noise.SetSeed(ChunkManager::seed);
                 noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-                noise.SetFractalOctaves(4);
+                noise.SetFractalOctaves(16);
                 float noiseValue = glm::abs(noise.GetNoise(xPos, yPos));
                 int heightMap = noiseValue * maxHeight;
 
                 if (y <= heightMap)
                 {
                     blocks[x][y][z].SetBlockType(BlockType::Grass);
-                }
-                else
-                {
-                    blocks[x][y][z].SetBlockType(BlockType::Air);
                 }
             }
         }
@@ -87,7 +83,7 @@ void Chunk::CreateMesh()
             }
         }
     }
-    renderer->AddMesh(*mesh);
+    renderer->SetMesh(*mesh);
     lastVertexSize = 0;
 }
 void Chunk::CreateBlock(const int x, const int y, const int z)

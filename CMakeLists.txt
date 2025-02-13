@@ -27,3 +27,5 @@ target_link_libraries(glprac PRIVATE glm::glm)
 target_link_libraries(glprac PRIVATE assimp::assimp)
 target_include_directories(glprac PRIVATE ${Stb_INCLUDE_DIR})
 
+target_link_libraries(glprac PRIVATE spdlog::spdlog)
+target_link_libraries(glprac PRIVATE glm::glm)

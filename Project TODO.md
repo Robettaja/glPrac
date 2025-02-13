@@ -1,7 +1,13 @@
-1. Multithreading sitä mukaan renderöi kun on valmista.
-2. Lisätä foliage.
-3. Lisätä vettä.
-4. Skybox.
-5. vähemmän dataa per vertex.
-6. Palikka tyypit.
-7. Greedy mesher
+Lisätä foliage.
+Lisätä vettä.
+Skybox.
+vähemmän dataa per vertex.
+Palikka tyypit.
+Greedy mesher
+palikoiden luonti/tuhoaminen pelaajan toimesta.
+fix noise
+Multiplayer
+Mailman tallennus
+Biomet
+fysiikat
+collisions

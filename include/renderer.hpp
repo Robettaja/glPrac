@@ -21,6 +21,6 @@ class Renderer
     ~Renderer();
     void SetPosition(glm::vec3 pos);
     void LinkGL();
-    void AddMesh(Mesh& mesh);
+    void SetMesh(Mesh& mesh);
     void Draw(const Shader& shader) const;
 };

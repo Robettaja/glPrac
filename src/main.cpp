@@ -2,6 +2,9 @@
 #include <glad/glad.h>
 
 #include "chunkmanager.hpp"
+#include "mesh.hpp"
+#include "modelloader.hpp"
+#include "renderer.hpp"
 #include "texture.hpp"
 #include "shader.hpp"
 #include "chunk.hpp"
@@ -116,10 +119,16 @@ int main()
 
     Texture texture("textures/grass.jpg");
     texture.Bind();
-    ChunkManager manager(shader, cam);
+    Renderer renderer(glm::vec3(0, 20, 0));
 
+    ModelLoader loader;
+    Mesh testi = loader.LoadModel("models/Testi.fbx");
+    renderer.SetMesh(testi);
+    renderer.LinkGL();
+
+    ChunkManager manager(shader, cam);
     manager.CreateChunks();
-    float timer = 0;
+
     while (!glfwWindowShouldClose(window))
     {
         Time::UpdateTime();
@@ -129,6 +138,7 @@ int main()
         cam.UpdateMatrices(shader, winWidth, winHeight);
         cam.MoveCamera(window);
         manager.Update();
+        renderer.Draw(shader);
         update_imgui();
         if (updateTimer >= 0.15f)
         {
