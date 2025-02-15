@@ -1,13 +1,18 @@
 #pragma once
 
+#include "texture.hpp"
 #include <string>
 #include <glm/glm.hpp>
+#include <vector>
 
 class Shader
 {
+    std::vector<Texture*> textures;
+
   public:
     unsigned int ID;
     Shader(const char* vertexPath, const char* fragmentPath);
+    void AddTexture(Texture* texture);
     void use() const;
     void setBool(const std::string& name, bool value) const;
     void setInt(const std::string& name, int value) const;

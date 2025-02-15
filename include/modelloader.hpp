@@ -7,5 +7,5 @@ class ModelLoader
   private:
   public:
     bool IsModeReady = false;
-    Mesh LoadModel(std::string filename);
+    Mesh LoadModel(const std::string& filename);
 };

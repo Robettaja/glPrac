@@ -9,7 +9,7 @@
 
 Timer timer2("Model Loading timer");
 
-Mesh ModelLoader::LoadModel(std::string filename)
+Mesh ModelLoader::LoadModel(const std::string& filename)
 {
     timer2.start();
     Mesh mesh;
@@ -29,7 +29,7 @@ Mesh ModelLoader::LoadModel(std::string filename)
             glm::vec3 vertexPos(aiVertex.x, aiVertex.y, aiVertex.z);
 
             aiVector3D uv = aiMesh->mTextureCoords[0][j];
-            glm::vec2 uvCoord(uv.x, uv.y);
+            glm::vec3 uvCoord(uv.x, uv.y, 0);
 
             aiVector3D normal = aiMesh->mNormals[j];
             glm::vec3 normalVec(normal.x, normal.y, normal.z);

@@ -104,7 +104,6 @@ int main()
         glfwTerminate();
         return -1;
     }
-    std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
     init_imgui(window);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -116,8 +115,9 @@ int main()
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
     shader.setVec3("lightPos", lightPos);
+    std::vector<const char*> path = {"textures/grass.jpg", "textures/stone.jpg"};
 
-    Texture texture("textures/grass.jpg");
+    Texture texture(path);
     texture.Bind();
     Renderer renderer(glm::vec3(0, 20, 0));
 

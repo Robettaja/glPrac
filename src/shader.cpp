@@ -80,6 +80,13 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 }
+void Shader::AddTexture(Texture* texture)
+{
+    GLuint64 handle = glGetTextureHandleARB(texture->ID);
+    glMakeTextureHandleResidentARB(handle);
+    GLint loc = glGetUniformLocation(ID, "ssbo");
+    glUniformHandleui64ARB(loc, handle);
+}
 void Shader::use() const
 {
     glUseProgram(ID);

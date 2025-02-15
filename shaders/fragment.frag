@@ -1,13 +1,12 @@
 #version 450 core
-#extension GL_ARB_bindless_texture: require
-
 out vec4 FragColor;
 
 in vec3 VertexPos;
-in vec2 TexCoord;
+in vec3 TexCoord;
 in vec3 Normals;
 
-uniform sampler2D tex;
+uniform sampler2DArray tex;
+
 uniform vec3 lightPos;
 
 void main()
