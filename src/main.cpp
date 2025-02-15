@@ -80,8 +80,8 @@ int main()
         return -1;
     }
     logger::init();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create window for application check if it exists and assign it to the
@@ -98,14 +98,14 @@ int main()
     }
     glfwMakeContextCurrent(window);
     // Check if glad was successfully assigned to program
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         glfwTerminate();
         return -1;
     }
+    std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
     init_imgui(window);
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);

@@ -11,7 +11,7 @@
 #include <glm/geometric.hpp>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/noise.hpp>
-#include <vendor/FastNoiseLite.h>
+#include <FastNoiseLite.h>
 #include <vector>
 #include <cmath>
 #include <iostream>

@@ -19,7 +19,6 @@ Texture::Texture(const char* path)
 
     int width, height, nrChannels;
     unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
-
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -34,4 +33,5 @@ Texture::Texture(const char* path)
 void Texture::Bind() const
 {
     glBindTexture(GL_TEXTURE_2D, ID);
+    // glBindTextureUnit(0, ID);
 }
