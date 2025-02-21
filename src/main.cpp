@@ -117,7 +117,7 @@ int main()
     shader.setVec3("lightPos", lightPos);
     std::vector<const char*> path = {"textures/grass.jpg", "textures/stone.jpg"};
 
-    Texture texture(path);
+    Texture texture(path, 1);
     texture.Bind();
     Renderer renderer(glm::vec3(0, 20, 0));
 

@@ -23,7 +23,7 @@ class Chunk
     Block*** blocks;
     std::shared_ptr<Renderer> renderer;
     std::shared_ptr<Mesh> mesh;
-    const int maxHeight = 32;
+    const int maxHeight = 8;
     size_t lastVertexSize = 0;
 
     bool IsFaceVisible(int x, int y, int z, FaceDirection faceDir) const;
@@ -38,7 +38,7 @@ class Chunk
     ~Chunk();
     void SetBlockTypes();
     void CreateMesh();
-    void CreateBlock(int x, int y, int z);
+    void CreateBlock(int x, int y, int z, BlockType blockType);
     void LoadGL();
     void Update();
     bool IsChunkVisible(glm::vec3& cameraPos, glm::vec3& cameraForward) const;

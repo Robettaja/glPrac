@@ -54,10 +54,13 @@ void Chunk::SetBlockTypes()
                 float yPos = (chunkPos.z + z);
                 FastNoiseLite noise;
                 noise.SetSeed(ChunkManager::seed);
+                noise.SetFrequency(0.04);
                 noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-                noise.SetFractalOctaves(16);
-                float noiseValue = glm::abs(noise.GetNoise(xPos, yPos));
-                int heightMap = noiseValue * maxHeight;
+                noise.SetFractalOctaves(12);
+                float noiseValue = noise.GetNoise(xPos, yPos) * 0.5 + 0.5;
+                // int heightMap = noiseValue * maxHeight;
+
+                int heightMap = std::pow(2.71828, noiseValue );
 
                 if (y <= heightMap)
                 {
@@ -79,18 +82,18 @@ void Chunk::CreateMesh()
                 if (!blocks[x][y][z].IsActive())
                     continue;
 
-                CreateBlock(x, y, z);
+                CreateBlock(x, y, z, blocks[x][y][z].GetBlockType());
             }
         }
     }
     renderer->SetMesh(*mesh);
     lastVertexSize = 0;
 }
-void Chunk::CreateBlock(const int x, const int y, const int z)
+void Chunk::CreateBlock(const int x, const int y, const int z, BlockType blocktype)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    int blockType = 0;
+    int blockType = (int) blocktype - 1;
     const size_t verticeCount = mesh->GetVertexAmount();
     if (IsFaceVisible(x, y, z, FaceDirection::Front))
     {
