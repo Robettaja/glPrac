@@ -1,26 +1,26 @@
 #include <future>
 #include <glad/glad.h>
 
+#include "camera.hpp"
+#include "chunk.hpp"
 #include "chunkmanager.hpp"
+#include "logger.hpp"
 #include "mesh.hpp"
 #include "modelloader.hpp"
 #include "renderer.hpp"
-#include "texture.hpp"
 #include "shader.hpp"
-#include "chunk.hpp"
-#include "camera.hpp"
-#include "logger.hpp"
+#include "texture.hpp"
 #include "time.hpp"
 
-#include <iostream>
-#include <GLFW/glfw3.h>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include <GLFW/glfw3.h>
 #include <glm/detail/qualifier.hpp>
 #include <glm/fwd.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
 int winWidth = 800;
 int winHeight = 600;
@@ -83,6 +83,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_SAMPLES, 8);
 
     // Create window for application check if it exists and assign it to the
     // software
@@ -107,6 +108,7 @@ int main()
     init_imgui(window);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+    glEnable(GL_MULTISAMPLE);
     glCullFace(GL_BACK);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 

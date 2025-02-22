@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 set (CMAKE_CXX_STANDARD 20)
+add_compile_definitions(GLFW_INCLUDE_NONE)
 project(glprac)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

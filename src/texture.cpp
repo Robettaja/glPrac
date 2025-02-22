@@ -1,8 +1,8 @@
 #include "texture.hpp"
 
-#include <iostream>
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
+#include <iostream>
 #include <stb_image.h>
 #include <vector>
 
@@ -44,7 +44,7 @@ Texture::Texture(std::vector<const char*> paths, int slot)
     int width, height, nrChannels;
     stbi_load(paths[0], &width, &height, &nrChannels, STBI_rgb_alpha);
 
-    glTexStorage3D(GL_TEXTURE_2D_ARRAY, 3, GL_RGBA8, width, height, paths.size());
+    glTexStorage3D(GL_TEXTURE_2D_ARRAY, 8, GL_RGBA8, width, height, paths.size());
 
     stbi_set_flip_vertically_on_load(true);
     for (int i = 0; i < paths.size(); i++)

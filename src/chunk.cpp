@@ -4,6 +4,8 @@
 #include "renderer.hpp"
 #include "shader.hpp"
 #include "vertex.hpp"
+#include <FastNoiseLite.h>
+#include <cmath>
 #include <cstdlib>
 #include <glm/common.hpp>
 #include <glm/exponential.hpp>
@@ -11,10 +13,8 @@
 #include <glm/geometric.hpp>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/noise.hpp>
-#include <FastNoiseLite.h>
-#include <vector>
-#include <cmath>
 #include <iostream>
+#include <vector>
 Chunk::Chunk(const glm::vec3 worldPos) : chunkPos(worldPos)
 {
     renderer = std::make_shared<Renderer>(worldPos);
@@ -50,8 +50,8 @@ void Chunk::SetBlockTypes()
         {
             for (int z = 0; z < CHUNK_SIZE; z++)
             {
-                float xPos = (chunkPos.x + x);
-                float yPos = (chunkPos.z + z);
+                float xPos = (chunkPos.x + x) / 5;
+                float yPos = (chunkPos.z + z) / 5;
                 FastNoiseLite noise;
                 noise.SetSeed(ChunkManager::seed);
                 noise.SetFrequency(0.04);
@@ -60,11 +60,11 @@ void Chunk::SetBlockTypes()
                 float noiseValue = noise.GetNoise(xPos, yPos) * 0.5 + 0.5;
                 // int heightMap = noiseValue * maxHeight;
 
-                int heightMap = std::pow(2.71828, noiseValue );
+                int heightMap = std::pow(2.71828, noiseValue * 3);
 
                 if (y <= heightMap)
                 {
-                    blocks[x][y][z].SetBlockType(BlockType::Grass);
+                    blocks[x][y][z].SetBlockType(BlockType::Stone);
                 }
             }
         }
@@ -93,74 +93,98 @@ void Chunk::CreateBlock(const int x, const int y, const int z, BlockType blockty
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    int blockType = (int) blocktype - 1;
+    int blockType = (int)blocktype - 1;
     const size_t verticeCount = mesh->GetVertexAmount();
     if (IsFaceVisible(x, y, z, FaceDirection::Front))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec3(0, 0, blockType), (glm::vec3(0, 0, 1))});
+            Vertex {glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec3(0, 0, blockType), (glm::vec3(0, 0, 1))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y - 0.5, z + 0.5), glm::vec3(1, 0, blockType), (glm::vec3(0, 0, 1))});
+            Vertex {glm::vec3(x + 0.5, y - 0.5, z + 0.5), glm::vec3(1, 0, blockType), (glm::vec3(0, 0, 1))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(0, 0, 1))});
+            Vertex {glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(0, 0, 1))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec3(0, 1, blockType), (glm::vec3(0, 0, 1))});
+            Vertex {glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec3(0, 1, blockType), (glm::vec3(0, 0, 1))}
+        );
     }
 
     if (0 && IsFaceVisible(x, y, z, FaceDirection::Down))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y - 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(0, -1, 0))});
+            Vertex {glm::vec3(x + 0.5, y - 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(0, -1, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec3(0, 1, blockType), (glm::vec3(0, -1, 0))});
+            Vertex {glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec3(0, 1, blockType), (glm::vec3(0, -1, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y - 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(0, -1, 0))});
+            Vertex {glm::vec3(x - 0.5, y - 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(0, -1, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y - 0.5, z - 0.5), glm::vec3(1, 0, blockType), (glm::vec3(0, -1, 0))});
+            Vertex {glm::vec3(x + 0.5, y - 0.5, z - 0.5), glm::vec3(1, 0, blockType), (glm::vec3(0, -1, 0))}
+        );
     }
     if (IsFaceVisible(x, y, z, FaceDirection::Back))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y - 0.5, z - 0.5), glm::vec3(1, 0, blockType), (glm::vec3(0, 0, -1))});
+            Vertex {glm::vec3(x + 0.5, y - 0.5, z - 0.5), glm::vec3(1, 0, blockType), (glm::vec3(0, 0, -1))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y - 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(0, 0, -1))});
+            Vertex {glm::vec3(x - 0.5, y - 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(0, 0, -1))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec3(0, 1, blockType), (glm::vec3(0, 0, -1))});
+            Vertex {glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec3(0, 1, blockType), (glm::vec3(0, 0, -1))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec3(1, 1, blockType), (glm::vec3(0, 0, -1))});
+            Vertex {glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec3(1, 1, blockType), (glm::vec3(0, 0, -1))}
+        );
     }
     if (IsFaceVisible(x, y, z, FaceDirection::Up))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec3(0, 1, blockType), (glm::vec3(0, 1, 0))});
+            Vertex {glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec3(0, 1, blockType), (glm::vec3(0, 1, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(0, 1, 0))});
+            Vertex {glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(0, 1, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec3(1, 0, blockType), (glm::vec3(0, 1, 0))});
+            Vertex {glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec3(1, 0, blockType), (glm::vec3(0, 1, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(0, 1, 0))});
+            Vertex {glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(0, 1, 0))}
+        );
     }
     if (IsFaceVisible(x, y, z, FaceDirection::Left))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y - 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(-1, 0, 0))});
+            Vertex {glm::vec3(x - 0.5, y - 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(-1, 0, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec3(1, 0, blockType), (glm::vec3(-1, 0, 0))});
+            Vertex {glm::vec3(x - 0.5, y - 0.5, z + 0.5), glm::vec3(1, 0, blockType), (glm::vec3(-1, 0, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(-1, 0, 0))});
+            Vertex {glm::vec3(x - 0.5, y + 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(-1, 0, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec3(0, 1, blockType), (glm::vec3(-1, 0, 0))});
+            Vertex {glm::vec3(x - 0.5, y + 0.5, z - 0.5), glm::vec3(0, 1, blockType), (glm::vec3(-1, 0, 0))}
+        );
     }
     if (IsFaceVisible(x, y, z, FaceDirection::Right))
     {
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y - 0.5, z + 0.5), glm::vec3(1, 0, blockType), (glm::vec3(1, 0, 0))});
+            Vertex {glm::vec3(x + 0.5, y - 0.5, z + 0.5), glm::vec3(1, 0, blockType), (glm::vec3(1, 0, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y - 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(1, 0, 0))});
+            Vertex {glm::vec3(x + 0.5, y - 0.5, z - 0.5), glm::vec3(0, 0, blockType), (glm::vec3(1, 0, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec3(0, 1, blockType), (glm::vec3(1, 0, 0))});
+            Vertex {glm::vec3(x + 0.5, y + 0.5, z - 0.5), glm::vec3(0, 1, blockType), (glm::vec3(1, 0, 0))}
+        );
         vertices.emplace_back(
-            Vertex{glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(1, 0, 0))});
+            Vertex {glm::vec3(x + 0.5, y + 0.5, z + 0.5), glm::vec3(1, 1, blockType), (glm::vec3(1, 0, 0))}
+        );
     }
     lastVertexSize = vertices.size();
 

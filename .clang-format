@@ -1,5 +1,11 @@
 BasedOnStyle: Microsoft
-SortIncludes: Never
 IndentWidth: 4
 DerivePointerAlignment: false
+BraceWrapping:
+    AfterStruct: true
 PointerAlignment: Left
+AlignAfterOpenBracket: BlockIndent
+Cpp11BracedListStyle: true
+SpaceBeforeCpp11BracedList: true
+AllowAllArgumentsOnNextLine: true
+BracedInitializerIndentWidth: 4

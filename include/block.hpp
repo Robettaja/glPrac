@@ -6,9 +6,9 @@ enum class BlockType
 {
     Air = 0,
     Grass,
+    Stone,
     Dirt,
     Water,
-    Stone,
     Wood,
     Sand,
 };
