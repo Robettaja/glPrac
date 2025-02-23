@@ -7,10 +7,10 @@ enum class BlockType
     Air = 0,
     Grass,
     Stone,
+    Sand,
     Dirt,
     Water,
     Wood,
-    Sand,
 };
 
 class Block

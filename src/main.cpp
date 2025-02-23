@@ -117,7 +117,7 @@ int main()
 
     Shader shader("shaders/vertex.vert", "shaders/fragment.frag");
     shader.setVec3("lightPos", lightPos);
-    std::vector<const char*> path = {"textures/grass.jpg", "textures/stone.jpg"};
+    std::vector<const char*> path = {"textures/grass.jpg", "textures/stone.jpg", "textures/sand.jpg"};
 
     Texture texture(path, 1);
     texture.Bind();

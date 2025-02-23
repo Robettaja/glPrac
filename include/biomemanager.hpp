@@ -1,12 +1,13 @@
 #include "block.hpp"
 #include <FastNoiseLite.h>
 #include <chunk.hpp>
+#include <functional>
 
 enum class Biome
 {
-    plains,
-    mountains,
-    desert,
+    Plains,
+    Mountains,
+    Desert,
 };
 
 template <typename T> struct Weighted
@@ -29,6 +30,7 @@ struct BiomeParams
 {
     std::string name;
     Biome type;
+    std::function<float(float)> CalculateHeightMap;
     float minHumidity, maxHumidity, minTemperature, maxTemperature;
     BiomeBlockPalette palette;
 };
@@ -37,13 +39,13 @@ class BiomeManager
 {
   private:
     int seed;
-    const float BIOME_POS_SCALE = 0.1;
+    const float BIOME_POS_SCALE = 0.001;
 
     FastNoiseLite humidityNoise;
     FastNoiseLite temperatureNoise;
 
   public:
     BiomeManager(int seed);
-    Biome GetBiome(float x, float y);
-    void GetHeightMap(float x, float y);
+    BiomeParams GetBiome(float x, float y);
+    float GetHeightMap(float x, float y, BiomeParams biome);
 };

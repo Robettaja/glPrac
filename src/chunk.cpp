@@ -1,4 +1,5 @@
 #include "chunk.hpp"
+#include "biomemanager.hpp"
 #include "block.hpp"
 #include "chunkmanager.hpp"
 #include "renderer.hpp"
@@ -44,28 +45,21 @@ Chunk::~Chunk()
 }
 void Chunk::SetBlockTypes()
 {
+    BiomeManager biomeManager(ChunkManager::seed);
+    BiomeParams biome = biomeManager.GetBiome(chunkPos.x, chunkPos.z);
     for (int x = 0; x < CHUNK_SIZE; x++)
     {
         for (int y = 0; y < CHUNK_SIZE; y++)
         {
             for (int z = 0; z < CHUNK_SIZE; z++)
             {
-                float xPos = (chunkPos.x + x) / 5;
-                float yPos = (chunkPos.z + z) / 5;
-                FastNoiseLite noise;
-                noise.SetSeed(ChunkManager::seed);
-                noise.SetFrequency(0.04);
-                noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-                noise.SetFractalOctaves(12);
-                float noiseValue = noise.GetNoise(xPos, yPos) * 0.5 + 0.5;
-                // int heightMap = noiseValue * maxHeight;
+                if (y != 0)
+                    continue;
+                float xPos = (chunkPos.x + x);
+                float yPos = (chunkPos.z + z);
+                // float heightMap = biomeManager.GetHeightMap(xPos, yPos, biome);
 
-                int heightMap = std::pow(2.71828, noiseValue * 3);
-
-                if (y <= heightMap)
-                {
-                    blocks[x][y][z].SetBlockType(BlockType::Stone);
-                }
+                blocks[x][y][z].SetBlockType(biome.palette.top.blocks[0].item);
             }
         }
     }
